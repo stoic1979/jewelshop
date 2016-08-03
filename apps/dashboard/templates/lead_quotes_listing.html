@@ -1,0 +1,152 @@
+{% extends 'admin_base.html' %}
+{% block title %}Lead_quots-Listing{% endblock %}
+
+{% block content %}
+<section class="common_wrapper">
+    <div class="content">
+        <div class="product-list">
+            <div class="product-details-div">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="page-main-title">Lead and quotes</span>
+                    </div>
+                    <div class="col-md-12">
+                        <!--<div class="filter-btn">-->
+                            <!--<a href="#" class="filter">Filter Options</a>-->
+                            <!--<ul class="dropdown" style="display: block;">-->
+                                 <!--<li><label>Store</label>-->
+                                     <!--<select class="form-control" name="">-->
+                                        <!--<option value="">Store</option>-->
+                                        <!--{% for store in Stores %}-->
+                                             <!--<option value="">{{ store.store_name }}</option>-->
+                                         <!--{% endfor %}-->
+                                    <!--</select>-->
+                                 <!--</li>-->
+                                 <!--<li>-->
+                                    <!--<label>Associates</label>-->
+                                        <!--<select class="form-control" name="">-->
+                                        <!--<option value="">Designation</option>-->
+                                        <!--<option value="">Supervisor</option>-->
+                                        <!--<option value="">Manager</option>-->
+                                        <!--<option value="">Lead</option>-->
+                                    <!--</select>-->
+                                 <!--</li>-->
+                                 <!--<li>-->
+                                    <!--<div class="start-date">-->
+                                        <!--<label>Start Date</label>-->
+                                    <!--<input type="text" class="form-control">-->
+                                    <!--</div>-->
+                                    <!--<div class="end-date">-->
+                                    <!--<label>End Date</label>-->
+                                    <!--<input type="text" class="form-control">-->
+                                    <!--</div>-->
+                                 <!--</li>-->
+                                 <!--<li><input type="button" class="submit" value="Search"></li>-->
+                             <!--</ul>-->
+                        <!--</div>-->
+                        <!--<div class="add-new-btn">-->
+                            <!--<a href="#">Add New</a>-->
+                        <!--</div>-->
+                        <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>LearLabs STN</th>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>ZIP code</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for customer in object_list %}
+                            <tr>
+                                <td>
+                                     QQ
+                                    {% if customer.id|stringformat:"i"|length == 1 %}
+                                    0000{{ customer.id }}
+                                    {% elif customer.id|stringformat:"i"|length == 2 %}
+                                        000{{ customer.id }}
+                                    {% elif customer.id|stringformat:"i"|length == 3 %}
+                                        00{{ customer.id }}
+                                    {% elif customer.id|stringformat:"i"|length == 4 %}
+                                        0{{ customer.id }}
+                                    {% else  %}
+                                    {{ customer.id }}
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'lead_quote_profile' customer.email_slug_field %}">{{ customer.get_customer_full_name }}</a></td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.zip_code }}</td>
+                                <td>Pending</td>
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        {% include "includes/pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+   <!--$( "#filter" ).click(function(event) {-->
+		<!--event.stopPropagation();-->
+        <!--$( ".dropdown" ).toggle( "slow" );-->
+        <!--});-->
+    		 <!--$(document).click( function(){-->
+
+            <!--$('.dropdown').hide("slow");-->
+        <!--});-->
+    $( ".dropdown" ).hide();
+    $(document).on('click', '.filter', function() {
+		event.stopPropagation();
+        $( ".dropdown" ).toggle( "slow" );
+    });
+    $(document).ready(function() {
+        $( "#datepicker1" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker2" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $(function () {
+            $('.associates').multiselect({
+                includeSelectAllOption: true
+            });
+            $('#btnSelected').click(function () {
+                var selected = $("#associate_list option:selected");
+                var message = "";
+                selected.each(function () {
+                    message += $(this).text() + " " + $(this).val() + "\n";
+                });
+                alert(message);
+            });
+        });
+    });
+</script>
+{% endblock %}

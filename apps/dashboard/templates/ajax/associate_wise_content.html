@@ -1,0 +1,10 @@
+<tbody id="associate_wise_content">
+{% for associate_dict in associate_wise_list|slice:":6" %}
+<tr role="row" class="odd">
+    <td>{{ associate_dict.associate.associate_acc_profile.user.get_full_name}}</td>
+    <td>{{ associate_dict.store_associate_acc.store_account.store_acc_profile.store_name }}</td>
+    <td>{{ associate_dict.store_associate_acc.store_account.store_acc_profile.jew_id }}</td>
+    <td>${{ associate_dict.total }}</td>
+</tr>
+{% endfor %}
+</tbody>

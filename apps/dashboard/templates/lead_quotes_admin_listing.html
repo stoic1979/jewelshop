@@ -1,0 +1,348 @@
+{% extends 'admin_base.html' %}
+{% block title %}Lead_quots-Listing{% endblock %}
+{% block content %}
+<section class="common_wrapper">
+    <div class="content">
+        <div class="product-list">
+            <div class="product-details-div">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="page-main-title">Lead and quotes</span>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="actions-btn">
+                            <a href="javascript:void(0)" class="data_action">Actions</a>
+                            <ul class="action_dropdown">
+                                <li>
+                                    <a href="javascript:void(0)" id="status_delete">Delete</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form  id="SearchForm" method="get" >{% csrf_token %}
+                            <div class="filter-btn">
+                                <a href="javascript:void(0)" class="filter">Filter Options</a>
+                                <ul class="dropdown" style="display: block;">
+                                    <li>
+                                        <div class="start-date">
+                                            <label>Start Date</label>
+                                            {% if start_date != None %}
+                                                <input type="text" class="form-control" id = "datepicker1"  value="{{ start_date }}" name="start_date"/>
+                                            {% else %}
+                                                <input type="text" class="form-control" id = "datepicker11"  name="start_date"/>
+                                            {% endif %}
+                                        </div>
+                                        <div class="end-date">
+                                            <label>End Date</label>
+                                            {% if end_date != None %}
+                                                <input type="text" class="form-control" id = "datepicker2" value="{{ end_date }}" name="end_date" />
+                                            {% else %}
+                                                <input type="text" class="form-control" id = "datepicker22"  name="end_date" />
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <li><label>Store</label>
+                                         <select class="form-control" id ="store" onchange="associate_lead();" name="store">
+                                             <option value="0">Store</option>
+                                             {% if store %}
+                                                    <option value="{{ store.id }}" selected="selected" >{{ store.store_name }}</option>
+                                                    {% for store in Stores %}
+                                                         <option value="{{ store.id }}">{{ store.store_name }}</option>
+                                                     {% endfor %}
+                                             {% else %}
+                                                 {% for store in Stores %}
+                                                     <option value="{{ store.id }}">{{ store.store_name }}</option>
+                                                 {% endfor %}
+                                             {% endif %}
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <label>Associates</label>
+                                    </li>
+                                    <li id = "list_associate">
+                                        <select id="associate_list" class="form-control associates" multiple="multiple" name="associates" >
+                                             {% if store %}
+                                                <!--{% for associate in selected_associates %}-->
+                                                    <!--<option value="{{associate.user.id}}" selected="selected" >{{associate.user.id}}</option>-->
+                                                <!--{% endfor %}-->
+                                                {% for associate in associate_list %}
+                                                    <option value="{{associate.user.id}}">{{associate.user}}</option>
+                                                {% endfor %}
+                                             {% endif %}
+                                        </select>
+                                    </li>
+                                     <li><input type="submit" class="submit" value="Search"></li>
+                                </ul>
+                            </div>
+                        </form>
+                        <!--<div class="add-new-btn">-->
+                            <!--<a href="#">Add New</a>-->
+                        <!--</div>-->
+                        <div id="leads_table">
+                            <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>LearLabs STN</th>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>ZIP code</th>
+                                <th>Status</th>
+                                <th>
+                                <input type="checkbox" class="checkall select_block" id="selectall">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="customer_content">
+                                {% for customer in object_list %}
+                                <tr>
+                                    <td>
+                                        QQ
+                                        {% if customer.id|stringformat:"i"|length == 1 %}
+                                        0000{{ customer.id }}
+                                        {% elif customer.id|stringformat:"i"|length == 2 %}
+                                            000{{ customer.id }}
+                                        {% elif customer.id|stringformat:"i"|length == 3 %}
+                                            00{{ customer.id }}
+                                        {% elif customer.id|stringformat:"i"|length == 4 %}
+                                            0{{ customer.id }}
+                                        {% else  %}
+                                        {{ customer.id }}
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="{% url 'lead_quote_profile' customer.email_slug_field %}">{{ customer.get_customer_full_name }}</a></td>
+                                    <td>{{ customer.email }}</td>
+                                    <td>{{ customer.zip_code }}</td>
+                                    <td>Pending</td>
+                                    <td><input type="checkbox" class="case select_block" name="case"
+                                               value="{{ customer.id }}"></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="pagination">
+                        {% include "_pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete confirmation Modal -->
+<div id="delete_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <p>There is some dependant data exist in some stores accounts.</p>
+
+                <p>you can't delete those data.</p>
+
+                <p>Are you sure to proceed delete other stores ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="delete_confirm">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $( "#datepicker1" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker2" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker11" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker22" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $(function () {
+            $('.associates').multiselect({
+                includeSelectAllOption: true
+            });
+            $('#btnSelected').click(function () {
+                var selected = $("#associate_list option:selected");
+                var message = "";
+                selected.each(function () {
+                    message += $(this).text() + " " + $(this).val() + "\n";
+                });
+                alert(message);
+            });
+        });
+    });
+    $(document).on('click', '#selectall', function() {
+        $('.case').prop('checked', $(this).prop('checked'));
+    });
+    $(document).on('click', '.case', function() {
+        if($(".case").length == $(".case:checked").length) {
+            $("#selectall").prop('checked','checked');
+        } else {
+            $("#selectall").removeProp('checked');
+        }
+    });
+
+    $(document).on('click', '.data_action', function() {
+		event.stopPropagation();
+        $( ".action_dropdown" ).toggle( "slow" );
+    });
+    $( ".dropdown" ).hide();
+    $(document).on('click', '.filter', function() {
+		event.stopPropagation();
+        $( ".dropdown" ).toggle( "slow" );
+    });
+
+    $(document).on('click', '#status_delete', function() {
+        var checked_list = [];
+        $(".case:checked").each( function() {
+            var check_value = $(this).val();
+            checked_list.push(check_value);
+        })
+        data = { 'checkbox[]':checked_list };
+        console.log(checked_list);
+        event.preventDefault();
+        if (checked_list.length > 1)
+        {
+                $('#delete_modal').modal('show');
+                $(document).on('click', '#delete_confirm', function()
+                {
+                $('#delete_modal').modal('hide');
+                $.ajax({
+                url : "{% url 'delete_lead' %}",
+                type : "POST",
+                data : data,
+
+                // handle a successful response
+                success : function(response)
+                 {
+                  console.log(response.status);
+                    if (response.status==true)
+                        {
+                            /*$('#customer_content').replaceWith(response.html_content);
+                            $( ".action_dropdown" ).toggle( "slow" );
+                            */
+                            $.urlParam = function(name){
+                                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                                return results[1] || 0;
+                            }
+                            var params = $.urlParam('page');
+                            var newUrl = "?" + 1;
+                            url = window.location.href.replace("page="+params, "page="+1);
+                            document.location = url;
+
+                        }
+                    else if (response.status==false)
+                       {
+                            console.log('error occur');
+                       }
+                    },
+                });
+            });
+          }
+          else
+          {
+                $.ajax({
+                url : "{% url 'delete_lead' %}",
+                type : "POST",
+                data : data,
+                // handle a successful response
+                success : function(response)
+                 {
+                 console.log(response.status);
+                    if (response.status==true)
+                        {
+                           /*
+                            $('#customer_content').replaceWith(response.html_content);
+                            $( ".action_dropdown" ).toggle( "slow" );
+                            */
+                            $.urlParam = function(name){
+                                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                                return results[1] || 0;
+                            }
+                            var params = $.urlParam('page');
+                            var newUrl = "?" + 1;
+                            url = window.location.href.replace("page="+params, "page="+1);
+                            document.location = url;
+                        }
+                    else if (response.status==false)
+                       {
+                            console.log('error occur');
+                       }
+                 },
+
+               });
+          }
+
+    });
+    <!--function Search_lead(){-->
+        <!--var data = $('#SearchForm').serialize();-->
+        <!--$.ajax({-->
+            <!--url: "{% url 'lead_list' %}",-->
+            <!--type: 'POST',-->
+            <!--data: data,-->
+            <!--async: false,-->
+            <!--success: function (response) {-->
+                <!--if (response.status==true)-->
+                <!--{-->
+                    <!--alert('Success');-->
+                    <!--$("#leads_table").replaceWith(response.html_content);-->
+                    <!--$("#pagination").css('display','none');-->
+                    <!--$(".dropdown").css('display','none');-->
+                <!--}-->
+            <!--},-->
+        <!--});-->
+        <!--return false;-->
+   <!--}-->
+   function associate_lead(){
+        var store =$('#store option:selected').val();
+        var data ={'store':store};
+        $.ajax({
+            url: "{% url 'lead_list' %}",
+            type: 'GET',
+            data:{'store_id':store},
+            async: false,
+            success: function (response) {
+                if (response.status==true)
+                {
+                    $("#list_associate").replaceWith(response.html_content);
+                }
+            },
+        });
+        return false;
+   }
+</script>
+<script>
+
+</script>
+{% endblock %}

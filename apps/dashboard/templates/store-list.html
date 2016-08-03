@@ -1,0 +1,329 @@
+{% extends 'admin_base.html' %}
+{% block title %}Product-Listing{% endblock %}
+
+{% block content %}
+<section class="common_wrapper">
+    <div class="content">
+        <div class="product-list">
+            <div class="product-details-div">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="page-main-title">Store list</span>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="actions-btn">
+                            <a href="javascript:void(0)" class="data_action">Actions</a>
+                            <ul class="action_dropdown">
+                                <li>
+                                    <a href="#" id="status_active">Active</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="status_inactive">Inactive</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="status_delete">Delete</a>
+                                </li>
+                                <!--<li><input type="button" class="submit" value="Search"></li>-->
+                            </ul>
+                        </div>
+                        <div class="filter-btn">
+                            <a href="javascript:void(0)" class="filter" id="filter">Filter Options</a>
+                            <ul class="dropdown">
+                                <li><label>Store</label>
+                                    <select class="form-control" name="">
+                                        <option value="">Store </option>
+                                        <option value="">ABC Jewellers</option>
+                                        <option value="">GB Jewellers</option>
+                                        <option value="">WBC Jewellers</option>
+                                    </select></li>
+                                <li>
+                                    <label>Designation</label>
+                                    <select class="form-control" name="">
+                                        <option value="">Designation</option>
+                                        <option value="">Supervisor</option>
+                                        <option value="">Manager</option>
+                                        <option value="">Lead</option>
+                                    </select>
+                                </li>
+                                <li><label>Country</label>
+                                    <select class="form-control" name="">
+                                        <option value="">USA</option>
+                                        <option value="">India</option>
+                                        <option value="">UK</option>
+                                        <option value="">UAE</option>
+                                    </select></li>
+                                <li>
+                                    <div class="start-date">
+                                        <label>Start Date</label>
+                                        <input type="text" class="form-control"/>
+                                    </div>
+                                    <div class="end-date">
+                                        <label>End Date</label>
+                                        <input type="text" class="form-control"/>
+                                    </div>
+                                </li>
+                                <li><input type="button" class="submit" value="Search"/></li>
+                            </ul>
+                        </div>
+                        <div class="add-new-btn">
+                            <a href="{% url 'sign-up'%}">Add New</a>
+                        </div>
+                        <table cellpadding="0" cellspacing="0" border="0" id="store_list_table"
+                               class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Serial No</th>
+                                <th>Store Name</th>
+                                <th>Jeweler ID</th>
+                                <th>LearLabs Account #</th>
+                                <th>City, State, Zip, Country</th>
+                                <!--<th>No:Associate</th>-->
+                                <th>Status</th>
+                                <th>Edit</th>
+                                <th>
+                                    <input type="checkbox" class="checkall select_block" id="selectall">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for store_holder in object_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{% url 'store-profile' store_holder.name_slug_field %}">{{ store_holder.store_acc_profile.store_name }} </a>
+                                </td>
+                                <td>{{ store_holder.store_acc_profile.jew_id }}</td>
+                                <td>{{ store_holder.store_acc_profile.lear_lab_ID }}</td>
+                                <td>
+                                    {% if store_holder.store_acc_profile.city %}
+                                    {{ store_holder.store_acc_profile.city }},
+                                    {% else %}
+                                    --,
+                                    {% endif %}
+                                    {% if store_holder.store_acc_profile.state %}
+                                    {{ store_holder.store_acc_profile.state }},
+                                    {% else %}
+                                    --,
+                                    {% endif %}
+                                    {% if store_holder.store_acc_profile.zip_code %}
+                                    {{ store_holder.store_acc_profile.zip_code }} ,
+                                    {% else %}
+                                    --,
+                                    {% endif  %}
+                                    {% if store_holder.store_acc_profile.country %}
+                                    {{ store_holder.store_acc_profile.country }}
+                                    {% else %}
+                                    --,
+                                    {% endif  %}
+                                </td>
+                                <!--<td></td>-->
+                                <th>
+                                    {% if store_holder.is_active == True %}
+                                    Active
+                                    {% else %}
+                                    Inactive
+                                    {% endif %}
+                                </th>
+                                <td><a href="{% url 'store-profile' store_holder.name_slug_field %}"><i
+                                        class="fa fa-pencil"></i></a></td>
+                                <td>
+                                    <input type="checkbox" class="case select_block" name="case"
+                                           value="{{ store_holder.id }}">
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        {% include "includes/pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Delete confirmation Modal -->
+<div id="delete_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <p>There is some dependant data exist in some stores accounts.</p>
+
+                <p>you can't delete those data.</p>
+
+                <p>Are you sure to proceed delete other stores ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="delete_confirm">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block extra_js %}
+<script>
+
+    $(document).on('click', '#selectall', function() {
+        $('.case').prop('checked', $(this).prop('checked'));
+    });
+    $(document).on('click', '.case', function() {
+        if($(".case").length == $(".case:checked").length) {
+            $("#selectall").prop('checked','checked');
+        } else {
+            $("#selectall").removeProp('checked');
+        }
+    });
+
+    $(document).on('click', '#status_active', function() {
+        var checked_list = [];
+        $(".case:checked").each( function() {
+            var check_value = $(this).val();
+            checked_list.push(check_value);
+        })
+        data = { 'checkbox[]':checked_list };
+        console.log(checked_list);
+        event.preventDefault();
+        $.ajax({
+        url : "{% url 'store_active_user' %}",
+        type : "POST",
+        data : data,
+
+        // handle a successful response
+        success : function(response) {
+            if (response.status==true)
+            {
+                // $('#store_list_table').replaceWith(response.html_content);
+                $( ".action_dropdown" ).toggle( "slow" );
+                location.reload();
+            }
+            else if (response.status==false)
+               {
+                location.reload();
+                console.log('error occur');
+               }
+            },
+        });
+    });
+
+    $(document).on('click', '#status_inactive', function() {
+        var checked_list = [];
+        $(".case:checked").each( function() {
+            var check_value = $(this).val();
+            checked_list.push(check_value);
+        })
+        data = { 'checkbox[]':checked_list };
+        console.log(checked_list);
+        event.preventDefault();
+        $.ajax({
+        url : "{% url 'store_active_user' %}",
+        type : "GET",
+        data : data,
+
+        // handle a successful response
+        success : function(response) {
+            if (response.status==true)
+            {
+                // $('#store_list_table').replaceWith(response.html_content);
+                $( ".action_dropdown" ).toggle( "slow" );
+                location.reload();
+            }
+            else if (response.status==false)
+               {
+                location.reload();
+                console.log('error occur');
+               }
+            },
+        });
+    });
+
+    $(document).on('click', '#status_delete', function() {
+        var checked_list = [];
+        $(".case:checked").each( function() {
+            var check_value = $(this).val();
+            checked_list.push(check_value);
+        })
+        data = { 'checkbox[]':checked_list };
+        console.log(checked_list);
+        event.preventDefault();
+        $.ajax({
+        url : "{% url 'store_delete_users' %}",
+        type : "GET",
+        data : data,
+
+        // handle a successful response
+        success : function(response) {
+            if (response.dependent_status==true)
+            {
+                $('#delete_modal').modal('show');
+                $(document).on('click', '#delete_confirm', function() {
+
+                    $('#delete_modal').modal('hide');
+                    $.ajax({
+                    url : "{% url 'store_delete_users' %}",
+                    type : "POST",
+                    data : data,
+
+                    // handle a successful response
+                    success : function(response) {
+                        if (response.status==true)
+                        {
+                            /*
+                            $('#store_list_table').replaceWith(response.html_content);
+                            $( ".action_dropdown" ).toggle( "slow" );
+
+                             $.urlParam = function(name){
+                                    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                                    return results[1] || 0;
+                                }
+                                var params = $.urlParam('page');
+                                var newUrl = "?" + 1;
+                                url = window.location.href.replace("page="+params, "page="+1);
+                                document.location = url;
+                                */
+                                location.reload();
+                        }
+                        else if (response.status==false)
+                           {
+                           location.reload();
+                            console.log('error occur');
+                           }
+                        },
+                    });
+                });
+
+            }
+            else if (response.dependent_status==false)
+               {
+                    $('#store_list_table').replaceWith(response.html_content);
+                    console.log('error occur');
+                    location.reload();
+                    $( ".action_dropdown" ).toggle( "slow" );
+               }
+            },
+        });
+    });
+
+    $(document).on('click', '#filter', function() {
+		event.stopPropagation();
+        $( ".dropdown" ).toggle( "slow" );
+    });
+    $(document).on('click', '.data_action', function() {
+		event.stopPropagation();
+        $( ".action_dropdown" ).toggle( "slow" );
+    });
+    /*
+    $(document).click( function(){
+        $('.dropdown').hide("slow");
+    });
+    */
+
+</script>
+{% endblock %}

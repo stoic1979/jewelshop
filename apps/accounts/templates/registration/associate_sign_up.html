@@ -1,0 +1,497 @@
+{% extends 'admin_base.html' %}
+{% block title %}Registration{% endblock %}
+{% block section_class %}common_wrapper registration {% endblock %}
+{% block content %}
+<div class="content">
+    <div class="product-list clearfix">
+        <h2>User Registration Form</h2>
+
+        <div class="">
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step">
+                        <a href="#step-1" type="button" class="btn btn-primary btn-circle"><span>1</span></a>
+
+                        <p>Basic Details</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <a href="#step-2" type="button" class="btn btn-default btn-circle"
+                           disabled="disabled"><span>2</span></a>
+
+                        <p>Profile Details</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle last-one"
+                           disabled="disabled"><span>3</span></a>
+
+                        <p>Step 3</p>
+                    </div>
+                </div>
+            </div>
+            <form role="form" id="associate_sign_up_form" action="." method="post" enctype="multipart/form-data">{% csrf_token %}
+                 <input type="hidden" name="account_type" value="associate_sign-up"/>
+                <div class="row setup-content" id="step-1">
+                    <div class="col-md-12">
+                        <h3> Basic Details</h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">First name </label>
+                                    <input type="text" rel="text" name="first_name" placeholder="First name..."
+                                           class="form-first-name form-control" id="first_name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Last name </label>
+                                    <input type="text" rel="text" name="last_name" placeholder="Last name..."
+                                           class="form-first-name form-control" id="last_name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">User name </label>
+                                    <input type="text" rel="text" name="username" placeholder="User name..."
+                                           class="form-first-name form-control" id="user_name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Email Address</label>
+                                    <input type="text" rel="email" name="email" placeholder="Email..."
+                                           class="form-first-name form-control" id="email">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Password</label>
+                                    <input type="password" rel="password" name="password1" placeholder="Password..."
+                                           class="form-first-name form-control" id="password">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Confirm password</label>
+                                    <input type="password" rel="password" name="password2"
+                                           placeholder="Confirm password..." class="form-first-name form-control"
+                                           id="confirm_password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12 continue_bttn clearfix">
+                                <button type="button" onclick="isNextValidForm('next1');" class="btn nextBtn btn-primary pull-right"
+                                        >Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row setup-content" id="step-2">
+                    <div class="col-md-12">
+                        <h3>Profile Details</h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Associate Code</label>
+                                    <input type="text" rel="text" name="associate_code" placeholder="Associate Code..."
+                                           class="form-first-name form-control" id="associate_code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Designation </label>
+                                    <input type="text" rel="designation" name="designation" placeholder="Designation..."
+                                           class="form-first-name form-control" id="designation">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Phone</label>
+                                    <input type="text" rel="phone" name="phone" placeholder="Phone..."
+                                           class="form-first-name form-control" id="phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Zip code </label>
+                                    <input type="text" rel="number" name="zip_code" placeholder="Zip code..."
+                                           class="form-first-name form-control" id="zip_code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Address </label>
+                                    <textarea name="address" rel="text" class="form-control" id="address" placeholder="Address.."></textarea>
+                                </div>
+                                <div class="form-group row">
+                                <label class="control-label col-md-12">Associate Photo</label>
+
+                                <div class="filestyle col-md-6 btn btn-default">
+                                <span>Associate Photo upload</span>
+                                <input rel="file" type="file" name="associate_photo" class="associate_img_upload">
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12 continue_bttn clearfix">
+                                <button type="button" onclick="isNextValidForm('next2');" class="btn nextBtn btn-primary pull-right">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row setup-content" id="step-3">
+                    <div class="row">
+                        <div class="col-md-12 padTop30">
+                            <h3 class="text-center">Confirm</h3>
+                            <div class="row clearfix">
+                                <div class="col-xs-12 col-sm-4 col-md-4">
+                                    <div class="col-md-8 col-md-offset-4">
+                                        <img src="/static/images/jewellery_8m0Bxb9.jpg" class="associate_img" alt="No image"/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-8 col-md-8">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Name<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p>
+                                                        <span class="associate_details_first_name">__</span>&nbsp;
+                                                        <span class="associate_details_last_name">__</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                             <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Username<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_username">__</p>
+                                                </div>
+                                             </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Email<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_email">__</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Associate code<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_code">__</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Designation<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_designation">__</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Phone<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_phone">__</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                         <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Zip Code<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_zipcode">__</p>
+                                                </div>
+                                            </div>
+                                             <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-xs-6 col-sm-6 col-md-3">
+                                                    <p>Address<span class="pull-right">:</span></p>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-6 col-md-9">
+                                                    <p class="associate_details_address">__</p>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-success btn-lg" type="submit">Save!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+        $(document).on("change",".associate_img_upload", function(){
+                 readURL(this);
+            });
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('.associate_img').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(document).on("change","#first_name", function(){
+                 $('.associate_details_first_name').html($(this).val());
+            });
+            $(document).on("change","#last_name", function(){
+                 $('.associate_details_last_name').html($(this).val());
+            });
+            $(document).on("change","#user_name", function(){
+                 $('.associate_details_username').html($(this).val());
+            });
+            $(document).on("change","#email", function(){
+                 $('.associate_details_email').html($(this).val());
+            });
+            $(document).on("change","#associate_code", function(){
+                 $('.associate_details_code').html($(this).val());
+            });
+            $(document).on("change","#designation", function(){
+                 $('.associate_details_designation').html($(this).val());
+            });
+            $(document).on("change","#phone", function(){
+                 $('.associate_details_phone').html($(this).val());
+            });
+            $(document).on("change","#zip_code", function(){
+                 $('.associate_details_zipcode').html($(this).val());
+            });
+            $(document).on("change","#address", function(){
+                 $('.associate_details_address').html($(this).val());
+            });
+
+
+function isNextValidForm(next)  {
+       form_data = $('#associate_sign_up_form').serialize()+"&next="+next+"&acc_type=associate";
+       allNextBtn = $('.nextBtn');
+       $( ".server_error" ).remove();
+       var curStep = $(allNextBtn).closest(".setup-content"),
+	   curStepBtn = curStep.attr("id"),
+       nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a");		$.ajax({
+                  url: "{% url 'associate-field-check' %}",
+                        type: 'POST',
+                        data:form_data,
+                        async: false,
+                        success: function(response) {
+                            if (response.acc_form_status==true && response.next=='next1')
+                          {
+
+                                allNextBtn.click(function(){
+                                nextStepWizard.removeAttr('disabled').trigger('click');
+                                                            });
+                          }
+                            else if (response.acc_form_status==false && response.next=='next1')
+
+                            {
+                            $.each( response.acc_form_errors, function( field_name, error )
+                             {
+                                        var field_parent_selector = $("input[name="+field_name+"]").parent();
+                                        $(field_parent_selector).after("<div class='server_error' style='color:red;'>"+error+"</div>");                                      ;
+
+                             });
+
+                            }
+
+                            if (response.associate_profile_status==false && response.next=='next2')
+                            {
+
+                            $.each( response.associate_profile_form_errors, function( field_name, error )
+                             {
+
+                             if (field_name=='address')
+                             {
+                                     var field_parent_selector = $("textarea[name="+field_name+"]").parent();
+                                     $(field_parent_selector).after("<div class='server_error' style='color:red;'>"+error+"</div>");
+                             }
+                                        var field_parent_selector = $("input[name="+field_name+"]").parent();
+                                        $(field_parent_selector).after("<div class='server_error' style='color:red;'>"+error+"</div>");                                      ;
+
+                             });
+
+                            }
+
+                            else if (response.associate_profile_status==true && response.next=='next2')
+                                {
+                                allNextBtn.click(function(){
+                                $('a.btn.btn-default.btn-circle.last-one').removeAttr('disabled').trigger('click');
+                                                            });
+                                }
+
+                        }
+                    });
+
+
+			}
+
+
+
+$(document).ready(function () {
+				var navListItems = $('div.setup-panel div a'),
+					allWells = $('.setup-content'),
+					allNextBtn = $('.nextBtn');
+				allWells.hide();
+
+				navListItems.click(function (e) {
+					e.preventDefault();
+					var $target = $($(this).attr('href')),
+						$item = $(this);
+					if (!$item.hasClass('disabled')) {
+						navListItems.removeClass('btn-primary').addClass('btn-default');
+						$item.addClass('btn-primary');
+						allWells.hide();
+						$target.show();
+						$target.find('input:eq(0)').focus();
+					}
+				});
+
+		allNextBtn.click(function(){
+					var regexPhone =  /^[\s()+-]*([0-9][\s()-]*){6,20}$/;
+					var regexEmail = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+					var curStep = $(this).closest(".setup-content"),
+						curStepBtn = curStep.attr("id"),
+						nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+						curInputs = curStep.find("select,textarea,input[type='text'],input[type='file'],input[type='password']"),
+						isValid = true;
+					$(".form-group").removeClass("has-error");
+
+						/*
+
+
+					for(var i=0; i<curInputs.length; i++){
+						var fieldInput =curInputs[i];
+						var relation = $(fieldInput).attr("rel");
+						console.log(relation);
+						var valueInput = $(fieldInput).val();
+						if(relation == "text"){
+							if (!valueInput.length){
+								isValid = false;
+								$(curInputs[i]).closest(".form-group").addClass("has-error");
+							}
+						}else if(relation == "email"){
+							console.log(1);
+							if (!regexEmail.test(valueInput)) {
+								isValid = false;
+								$(curInputs[i]).closest(".form-group").addClass("has-error");
+							}
+						} else if(relation == "password"){
+							var confirm_password = $('#confirm_password').val();
+							var password = $('#password').val();
+							if(confirm_password != password  || !valueInput.length){
+								isValid = false;
+								$(curInputs[i]).closest(".form-group").addClass("has-error");
+							}
+						} else if(relation == "phone"){
+							if (!regexPhone.test(valueInput)) {
+								isValid = false;
+								$(curInputs[i]).closest(".form-group").addClass("has-error");
+							}
+						}
+					}
+
+					*/
+
+
+
+
+					var email_status = false;
+                    var email  = $('#email').val();
+                  /*  $.ajax({
+                        url: "{% url 'associate-field-check' %}",
+                        type: 'POST',
+                        data:{ accociate_email: email },
+                        async: false,
+                        success: function(response) {
+                            if (response.email_status){
+                                email_status = false;
+                            }
+                            else {
+                               email_status = true;
+                                $('#email').closest(".form-group").addClass("has-error");
+                            }
+                        }
+                    }); */
+                    /*
+                    if(email_status) {
+                        isValid = false;
+                         $('#email').closest(".form-group").addClass("has-error");
+                    }
+
+                    var user_name_status = false;
+                    var user_name  = $('#user_name').val();
+                    $.ajax({
+                        url: "{% url 'associate-field-check' %}",
+                        type: 'GET',
+                        data:{ accociate_user_name: user_name },
+                        async: false,
+                        beforeSend: function(){
+                                   console.log('ajax call start');
+                                },
+                        success: function(response) {
+                            if (response.user_name_status){
+                                user_name_status = false;
+                            }
+                            else {
+                              user_name_status = true;
+                            }
+                        }
+                    });
+                    */
+                    /*if(user_name_status) {
+                        isValid = false;
+                        $('#user_name').closest(".form-group").addClass("has-error");
+                   }
+
+					if (isValid){nextStepWizard.removeAttr('disabled').trigger('click');}
+					*/
+				});
+
+				$('div.setup-panel div a.btn-primary').trigger('click');
+
+			});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load account_tags %}
+
+<tbody id="store_wise_content">
+{% for store_dict in store_vise_list|slice:":5" %}
+<tr role="row" class="odd">
+    <td>{{ forloop.counter }}</td>
+    <td>{{ store_dict.store.store_acc_profile.store_name }}</td>
+    <td>{{ store_dict.store.store_acc_profile.jew_id }}</td>
+    <td>${{ store_dict.total }}</td>
+    <td>
+					                    	<span class="knobForSmalldevice">
+
+												{% store_percent_amount total_attainment store_dict.total %}
+					                    	</span>
+					                    	<span class="knobForlargedevice">
+					                    		<input type="text" class="knob knobForlargedevice"
+                                                       value="{% store_percent_amount total_attainment store_dict.total %}%"
+                                                       data-thickness="0.2" data-width="40" data-height="40"
+                                                       data-fgColor="#5dc524" readonly>
+					                    	</span>
+    </td>
+</tr>
+{% endfor %}
+</tbody>

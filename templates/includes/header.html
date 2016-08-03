@@ -1,0 +1,82 @@
+{% load account_tags %}
+<header>
+    <div class="content">
+        <div class="logo">
+            <a href="{% url 'associate-view' %}"><img src="/static/images/abc-logo.png" alt="ABC | Generic Company"/></a>
+        </div>
+        <div class="right-block pull-right">
+            {% if request.user|has_group:"store admin" %}
+            <div class=" pull-left">
+
+            </div>
+            {% else %}
+             <div class="abc-jewlers pull-left">
+                    <a href="#"><img src="/static/images/abc-jewelers.png" alt="ABC | Jewelers"/></a>
+                </div>
+            {% endif %}
+            <div class="user-area pull-left">
+                <ul>
+                    <li class="user-photo ">
+                        {% if is_slug and associate.associate_acc_profile.associate_photo %}
+                        <img src="{{ associate.associate_acc_profile.associate_photo.url }}" alt="ABC | Jewelers"/>
+                        {% elif  request.user.associate_acc_profile.associate_photo %}
+                         <img src="{{ request.user.associate_acc_profile.associate_photo.url }}" alt="ABC | Jewelers"/>
+                        {% elif request.user|has_group:"store admin" and request.user.store_acc_profile.store_pic %}
+                        <img src="{{ request.user.store_acc_profile.store_pic.url }}" alt="ABC | Jewelers"/>
+                        {% else %}
+                        <img src="/static/images/no-name.png" alt="ABC | Jewelers"/>
+                        {% endif  %}
+                    </li>
+                    {% if request.user|has_group:"store admin" %}
+                        <li class="user-name left-border">
+                    {% else %}
+                    <li class="user-name">
+                    {% endif %}
+                        {% if is_slug %}
+                        {{ associate.get_full_name }}
+                        {% else %}
+                         {{ request.user.store_acc_profile.store_name }}
+                        {% endif  %}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <nav>
+
+                    <div class="menu_collapse">
+                        <i class="fa fa-bars" id="swipeMenu"></i>
+                        <nav>
+                            <ul class="collapse_menu">
+                                <li class="home"><a href="{% url 'associate-view' %}">Home</a></li>
+                                <li class="admin"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                {% if request.user|has_group:"super admin" %}
+                                <li class="admin"><a href="{% url 'store-listing' %}">Store account</a></li>
+                                <li class="admin"><a href="{% url 'lead_listing' %}">Lead-quotes</a></li>
+                                <li class="admin"><a href="{% url 'admin-profile' user.name_slug_field %}">My account</a></li>
+                                <!--<li class="admin"><a href="{% url 'user-role'%}">User role</a></li>-->
+                                {% endif %}
+                                {% if not is_slug %}
+                                {% if request.user|has_group:"store admin" %}
+                                <li class="admin"><a href="javascript:void(0)" class="sub_drop_down">Admin</a>
+                                    <ul class="sub-meu">
+                                        <li class="admin"><a href="{% url 'sign-up'%}">Add associate</a></li>
+                                        <li class="admin"><a href="{% url 'associates'%}">Associates</a></li>
+                                        <li class="admin"><a href="{% url 'admin-profile' user.name_slug_field %}">My account</a></li>
+                                    </ul>
+                                </li>
+                                <li class="admin"><a href="{% url 'lead_listing' %}">Lead-quotes</a></li>
+                                {% endif %}
+                                {% endif %}
+                                <li class="logout"><a href="{% url 'logout' %}">Logout</a></li>
+                                <li class="cls"><a href="">Close Menu</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</header>

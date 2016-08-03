@@ -1,0 +1,119 @@
+{% extends 'admin_base.html' %}
+{% block title %}Lead_quots-Listing{% endblock %}
+
+{% block content %}
+<section class="common_wrapper">
+    <div class="content">
+        <div class="product-list">
+            <div class="product-details-div">
+                <div class="row">
+                    <form method="get">
+                        <div class="filterblock">
+                            <div class="dateblock dateholder"> <label>End Date
+                                <input type="text" name="end_date"
+                                       {% if request.GET.end_date %}value="{{request.GET.end_date}}" {% endif %}>
+                            </label>
+                            <label>Start Date
+                                <input type="text" name="start_date"
+                                       {% if request.GET.start_date %}value="{{request.GET.start_date}}" {% endif %}>
+                            </label></div>
+                            <div class="store_wise_select store_select_holder">
+                                <select class="store_select" name="store" id="store" multiple="multiple">
+                                    {% for store in stores %}
+                                    <option value="{{ store.id }}">{{ store.store_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-default">Search</button>
+                                <button type="reset" class="btn btn-danger">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-md-12">
+                        <span class="page-main-title">Store vise leads</span>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="hidden" name="store_list[]" id="selected_stores_list" class="selected_stores_list" value="{{ selected_stores_list }}"/>
+                        <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Jeweler ID</th>
+                                <th>Learlabs ID</th>
+                                <th>Store</th>
+                                <th>Replacement Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for store_dict in store_vise_list %}
+                            <tr>
+                                <td>
+                                    {{ store_dict.store.store_acc_profile.jew_id }}
+                                </td>
+                                <td>{{ store_dict.store.store_acc_profile.lear_lab_ID }}</a></td>
+                                <td>{{ store_dict.store.store_acc_profile.lear_lab_ID }}</td>
+                                <td>${{ store_dict.total }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        {% include "includes/pagination.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $(function () {
+            $('.store_select').multiselect({
+                includeSelectAllOption: true
+            });
+            $('#btnSelected').click(function () {
+                var selected = $("#associate_list option:selected");
+                var message = "";
+                selected.each(function () {
+                    message += $(this).text() + " " + $(this).val() + "\n";
+                });
+                alert(message);
+            });
+            var selected_stores_list = $('.selected_stores_list').val();
+            var selected_stores_list = JSON.parse(selected_stores_list);
+            for(var i in selected_stores_list) {
+                var optionVal = selected_stores_list[i];
+                $('.store_select').find("option[value="+optionVal+"]").prop("selected", "selected");
+            }
+            $('.store_select').multiselect('refresh');
+        });
+    });
+
+        $(function () {
+			$('.dateblock input').datepicker(
+				{ format: 'dd-mm-yyyy', autoclose: true}
+				);
+		});
+
+</script>
+{% endblock %}

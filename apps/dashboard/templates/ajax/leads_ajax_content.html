@@ -1,0 +1,28 @@
+<tbody id="customer_content">
+
+{% for customer in customers %}
+<tr>
+    <td>
+        QQ
+        {% if customer.id|stringformat:"i"|length == 1 %}
+        0000{{ customer.id }}
+        {% elif customer.id|stringformat:"i"|length == 2 %}
+        000{{ customer.id }}
+        {% elif customer.id|stringformat:"i"|length == 3 %}
+        00{{ customer.id }}
+        {% elif customer.id|stringformat:"i"|length == 4 %}
+        0{{ customer.id }}
+        {% else %}
+        {{ customer.id }}
+        {% endif %}
+    </td>
+    <td><a href="{% url 'lead_quote_profile' customer.email_slug_field %}">{{ customer.get_customer_full_name }}</a>
+    </td>
+    <td>{{ customer.email }}</td>
+    <td>{{ customer.zip_code }}</td>
+    <td>Pending</td>
+    <td><input type="checkbox" class="case select_block" name="case"
+               value="{{ customer.id }}"></td>
+</tr>
+{% endfor %}
+</tbody>

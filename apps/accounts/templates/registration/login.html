@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Sign in{% endblock %}
+{% block extra_css %}
+<style>
+    ul.errorlist li{
+    color: red;
+    width:100%;
+    }
+</style>
+{% endblock %}
+{% block body_class %} abccontainer {% endblock %}
+{% block content %}
+<div class="content">
+    <div class="associatediv">
+
+        <div class="signup">
+            <div class="signin-logo">
+                <a href="#"><img src="/static/images/abc-logo-large.png" alt="ABC | Generic Company"></a>
+            </div>
+
+
+            <h1 class="sliding-u-l-r-l-inverse">account sign in</h1>
+
+            <div class="signupdiv">
+                {{ form.non_field_errors }}
+                <div class="modal-body">
+                    <form action="." method='post' class="form col-md-12 center-block signupbox">
+                        {% csrf_token %}
+
+                        {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}"/>
+                        {% endif %}
+                        <div class="form-group">
+                            <input type="text" name="username" class="form-control input-lg" placeholder="Email/Username">
+                            {{ form.username.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control input-lg" placeholder="********">
+                            {{ form.password.errors }}
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
+                            <div class="checkbox pull-left">
+                                <label>
+                                    <input type="checkbox" id="c1" name="cc"/>
+                                    <label for="c1"><span></span></label> <span>Remember Me</span></label>
+                            </div>
+                            <div class="forgot"><a href="javascript:void(0)" class="account_get_back">Forgot Password?</a></div>
+                            <div class="signupblock"><a href="javascript:void(0)" class="contact_details">Sign Up</a></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!-- Modal for Admin Contact details -->
+<div class="modal fade" id="password_forgot" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title modalTitle">Contact admin</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>Please Contact jewelers mutual admin for get back your account </p>
+                <p class="text-center" >Email:&nbsp;quickquote@learlabs.com</p>
+                <!--<p>Contact Now..</p>-->
+                <p class="text-center">OR</p>
+                <p>Enter your email for get new password</p>
+                <div class="col-md-12">
+                    <form class="form-horizontal" method="" action="" role="form">
+                        <div class="form-group">
+                            <label for="user_email" class="col-sm-4 control-label">
+                                Email
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="user_email" />
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+                <p class="hidden email_error" style="color:red;">User with given email not found</p>
+                 <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default " data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary blueButton" id="recover_account">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Admin Contact details -->
+<div class="modal fade" id="admin_details" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title modalTitle">Contact admin</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please Contact jewelers mutual admin for start your account </p>
+                <p>Email:&nbsp;quickquote@learlabs.com</p>
+                <p>Contact Now..</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default blueButton" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+         $(document).on("click",".contact_details", function(){
+            $('#admin_details').modal('show');
+         });
+         $(document).on("click",".account_get_back", function(){
+            $('#password_forgot').modal('show');
+         });
+         $(document).on("click","#recover_account", function(){
+             email = $('#user_email').val();
+             $.ajax({
+                url : "{% url 'user_forgot_password' %}",
+                type : "POST",
+                async: false,
+                data: { email:email},
+                success: function(response) {
+                    if(response.status==true){
+                        if (!($('.email_error').hasClass('hidden'))){
+                            $('.email_error').addClass('hidden');
+                        }
+                        $('#password_forgot').modal('hide');
+                    }
+                    else if (response.status==false){
+                        $('.email_error').removeClass('hidden');
+                    }
+                }
+             });
+         });
+    </script>
+{% endblock %}

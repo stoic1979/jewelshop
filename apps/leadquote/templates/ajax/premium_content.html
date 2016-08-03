@@ -1,0 +1,41 @@
+<li class_identifier="class_premium-{{ context.item_id }}">
+    <div class="product-list-icon">
+        {% if  context.item_name == 'Watch' %}
+            <img src="/static/images/watch.png" alt="watch">
+        {% elif context.item_name == 'Chain' %}
+            <img src="/static/images/chain.png" alt="Chain">
+        {% elif  context.item_name == 'Ring' %}
+            <img src="/static/images/ring.png" alt="ring">
+        {% elif context.item_name == 'Bracelet' %}
+            <img src="/static/images/bracelet.png" alt="bracelet">
+        {% elif context.item_name == 'Earrings' %}
+            <img src="/static/images/Icon-Earrings.png" alt="earrings">
+        {% elif context.item_name == 'Necklace' %}
+            <img src="/static/images/Icon-Necklace.png" alt="Necklace">
+        {% elif  context.item_name == 'Brooch' %}
+            <img src="/static/images/Icon-Brooch.png" alt="Brooch">
+        {% elif context.item_name == 'Loose Stone' %}
+            <img src="/static/images/Icon-LooseStone.png" alt="Loose Stone">
+        {% elif context.item_name == 'Pendant' %}
+            <img src="/static/images/Icon-Pendant.png" alt="Pendant">
+        {% else %}
+            <img src="/static/images/Icon-Other.png" alt="Pendant">
+        {% endif %}
+    </div>
+    <div class="product-details">
+        <span class="name">{{ context.item_name }}</span>
+        <input type="hidden" value="{{ context.item_id }}" class="itemId"/>
+        <input type="hidden" value="{{ context.item_value }}" class="product-value"/>
+        <input type="hidden" value="{{ context.premium }}" class="product-price"/>
+        <input type="hidden" value="{{context.deduction}}"
+                                       class="product-deductible" />
+        <input type="hidden" value="{{context.taxesAndSurcharges}}"
+                                       class="product-taxesAndSurcharges" />
+
+        <span class="product-value">valued at ${{ context.item_value }}</span>
+                                <span class="product-premium">Annual premium:  <span
+                                        class="product-price"> ${{ context.premium }}</span></span>
+        <span class="product-deductible">(with ${{context.deduction}} deductible)</span>
+    </div>
+    <i class="fa fa-times-circle"></i>
+</li>

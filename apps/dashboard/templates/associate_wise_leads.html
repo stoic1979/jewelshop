@@ -1,0 +1,176 @@
+{% extends 'admin_base.html' %}
+{% load dashboard_tags account_tags %}
+{% block title %}Lead_quots-Listing{% endblock %}
+{% block content %}
+<section class="common_wrapper" id="box1">
+    <div class="content lire_lite_item">
+        <div class="row">
+            <div class="col-md-12 no-margin">
+                <div class="reportblock">
+                    <form method="get">
+                    <div class="filterblock">
+                        <div class="dateblock"><label>Start Date
+                            <input type="text" name="start_date"
+                                   {% if request.GET.start_date %}value="{{request.GET.start_date}}" {% endif %}></label> <label>End Date
+                            <input type="text" name="end_date"
+                                   {% if request.GET.end_date %}value="{{request.GET.end_date}}" {% endif %}></label></div>
+                        {% if request.user|has_group:"super admin" %}
+                        <div class="store"><label>Store
+                            <select name="store" id ="store" onchange="associate_lead();" name="store">
+                               <option disabled selected> -- select a store -- </option>
+                                {% for store in stores %}
+                                <option {% if request.GET.store == store.id|stringformat:'i' %} selected{% endif %}
+                                value="{{ store.id }}">{{ store.store_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        </div>
+                        {% endif %}
+                        <div id = "list_associate" class="multiblock associate_filter"><label>Associate
+                            <select name="associate" id="associate_list" class="form-control associates " multiple="multiple">
+                                {% for associate in get_associates %}
+                                    <option value="{{associate.id}}">{{associate.get_full_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        </div>
+                        <div class="associate_search_holder">
+                            <button type="submit" class="btn btn-default">Search</button>
+                            <button type="reset" class="btn btn-danger">Reset</button>
+                        </div>
+                    </div>
+                    </form>
+                    <input type="hidden" name="associate_list[]" id="associates_list" class="selected_stores_list" value="{{ associates_list }}"/>
+                    <table>
+                        <caption>Reports</caption>
+                        <thead>
+                        {% for associate_dict in associate_list %}
+                            {% is_quote associate_dict.associate as is_quote %}
+                        {% if is_quote %}
+                        <tr>
+                            <th>Associate ID</th>
+                            <th>Associate Name</th>
+                            <th>(Jeweler ID)</th>
+                            <th>Store Name</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ associate_dict.associate.associate_acc_profile.associate_code }}</td>
+                            <td>{{ associate_dict.associate.associate_acc_profile.user.get_full_name }}</td>
+                            {% get_store_associate_acc associate_dict.associate as store_associate_acc %}
+                            <td>{{ store_associate_acc.store_account.store_acc_profile.jew_id }}</td>
+                            <td>{{ store_associate_acc.store_account.store_acc_profile.store_name }}</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                        <tbody class="tablesubhead">
+                        <tr>
+                            <td></td>
+                            <td>Customer</td>
+                            <td>Jewelery Items</td>
+                            <td>Date of Submission</td>
+                            <td>Replacement Value</td>
+                        </tr>
+                        </tbody>
+                        <tbody>
+                        {% for customer_dict in associate_dict.customer_list %}
+                        <tr>
+                            <td></td>
+                            <td>{{ customer_dict.customer.get_customer_full_name }}</td>
+                            <td>{{ customer_dict.quote_count }}</td>
+                            <td>{{ customer_dict.quote_submission_date }}</td>
+                            <td>${{ customer_dict.total_customer_jewel_price }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="tablesubhead">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Sum of Values</strong></td>
+                            <td><strong>${{ associate_dict.total_jewel_value }}</strong></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+
+                        <tr class="tablesubhead grandtotalblock">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Grand Total</strong></td>
+                            <td><strong>${{ grand_total }}</strong></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        $( "#datepicker1" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker2" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker11" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $( "#datepicker22" ).datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $(function () {
+            $('.associates').multiselect({
+                includeSelectAllOption: true
+            });
+            $('#btnSelected').click(function () {
+                var selected = $("#associate_list option:selected");
+                var message = "";
+                selected.each(function () {
+                    message += $(this).text() + " " + $(this).val() + "\n";
+                });
+                alert(message);
+            });
+            var associates_list = $('#associates_list').val();
+            var associates_list = JSON.parse(associates_list);
+            for(var i in associates_list) {
+                var optionVal = associates_list[i];
+                $('.associates').find("option[value="+optionVal+"]").prop("selected", "selected");
+            }
+            $('.associates').multiselect('refresh');
+        });
+    });
+
+        $(function () {
+			$('.dateblock input').datepicker(
+				{ format: 'dd-mm-yyyy', autoclose: true}
+				);
+		});
+
+		function associate_lead(){
+        var store =$('#store option:selected').val();
+        var data ={'store':store};
+        $.ajax({
+            url: "{% url 'lead_list' %}",
+            type: 'GET',
+            data:{'store_id':store, 'filter_content':'associate_wise'},
+            async: false,
+            success: function (response) {
+                if (response.status==true)
+                {
+                    $("#list_associate").replaceWith(response.html_content);
+                }
+            },
+        });
+        return false;
+    }
+
+   </script>
+
+{% endblock %}

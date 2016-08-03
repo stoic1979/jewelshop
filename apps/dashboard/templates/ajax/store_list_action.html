@@ -1,0 +1,64 @@
+<table cellpadding="0" cellspacing="0" border="0" id="store_list_table" class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Serial No</th>
+        <th>Store Name</th>
+        <th>Jeweler ID</th>
+        <th>LearLabs Account #</th>
+        <th>City, State, Zip, Country</th>
+        <!--<th>No:Associate</th>-->
+        <th>Status</th>
+        <th>Edit</th>
+        <th>
+            <input type="checkbox" class="checkall select_block" id="selectall">
+            <!--<input type="checkbox" class="checkall select_block" onclick="toggleChecked(this.checked)">-->
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for store_holder in store_holders %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+            <a href="{% url 'store-profile' store_holder.name_slug_field %}">{{ store_holder.store_acc_profile.store_name }} </a>
+        </td>
+        <td>{{ store_holder.store_acc_profile.jew_id }}</td>
+        <td>{{ store_holder.store_acc_profile.lear_lab_ID }}</td>
+        <td>
+            {% if store_holder.store_acc_profile.city %}
+            {{ store_holder.store_acc_profile.city }},
+            {% else %}
+            --,
+            {% endif %}
+            {% if store_holder.store_acc_profile.state %}
+            {{ store_holder.store_acc_profile.state }},
+            {% else %}
+            --,
+            {% endif %}
+            {% if store_holder.store_acc_profile.zip_code %}
+            {{ store_holder.store_acc_profile.zip_code }} ,
+            {% else %}
+            --,
+            {% endif  %}
+            {% if store_holder.store_acc_profile.country %}
+            {{ store_holder.store_acc_profile.country }}
+            {% else %}
+            --,
+            {% endif  %}
+        </td>
+        <!--<td></td>-->
+        <th>
+            {% if store_holder.is_active == True %}
+            Active
+            {% else %}
+            Inactive
+            {% endif %}
+        </th>
+        <td><a href="{% url 'store-profile' store_holder.name_slug_field %}"><i class="fa fa-pencil"></i></a></td>
+        <td>
+            <input type="checkbox" class="case select_block" name="case" value="{{ store_holder.id }}">
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

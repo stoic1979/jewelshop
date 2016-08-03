@@ -1,0 +1,176 @@
+{% extends 'admin_base.html' %}
+{% block section_class %}common_wrapper{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="get_start_wrapper clearfix">
+        <form action="." method="post">  {% csrf_token %}
+            <input type="hidden" name="associate_pk" value="{{ associate.id }}" />
+            <h2>CONTACT INFORMATION</h2>
+
+            <div class="form-group col-md-6">
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    {{ form.first_name.errors }}
+                {% endif %}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    {{ form.last_name.errors }}
+                {% endif %}
+            </div>
+            <div class="form-group col-md-8">
+                {{ form.email }}
+                {% if form.email.errors %}
+                    {{ form.email.errors }}
+                {% endif %}
+            </div>
+            <div class="form-group col-md-4">
+                <input type="hidden" value="{{ associate.name_slug_field }}" class="name_slug"/>
+                <!--<input type="text" name="zip_code" onchange="validateZipCode(this.value, '{{ associate.name_slug_field }}')"
+                       class="form-control input-lg zip_code" placeholder="Zip">-->
+                {{ form.zip_code }}
+                <span id="zip-validator"><i class="fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom"></i> validating</span>
+                <span id="zip-validator-check"><i class="fa fa-check-circle fa-2x"></i></span>
+                {% if form.zip_code.errors %}
+                    {{ form.zip_code.errors }}
+                {% endif %}
+            </div>
+            <div id="country_select">
+
+            </div>
+
+            <div class="help_text_wrapper col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-1 col-xs-1 close_icon">
+                        <input type="checkbox" id="c1" name="cc" required/>
+                        <label for="c1"><span id="confirm_check"></span></label>
+                    </div>
+                    <div class="col-md-11 col-xs-11 help_text">
+                        <p>I hereby authorize the retailer above to provide a description of my jewelry purchase to
+                            Jewelers Mutual Insurance Company, along with my name and email address.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-12 continue_bttn clearfix">
+                <button type="submit" id="submit_data" class="btn btn-primary btn-block customer_btn ">CONTINUE</button>
+            </div>
+        </form>
+
+        <div class="form-group col-md-12 clearfix">
+            <div class="underline"></div>
+            <h4>OUR WORLD WIDE COVERAGE INCLUDE</h4>
+
+            <div class="specification">
+                <i class="fa fa-check-circle-o"></i>
+                <span>Loss</span>
+                <i class="fa fa-check-circle-o"></i>
+                <span>Theft</span>
+                <i class="fa fa-check-circle-o"></i>
+                <span>Damage</span>
+                <i class="fa fa-check-circle-o"></i>
+                <span>Mysterious Disappearance</span>
+            </div>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="wizard-block">
+        <div class="wizard-icon">
+            <a href="javascript:history.go(-1);" title=""><img src="/static/images/wizard-icon.png" alt="wizard"></a>
+        </div>
+        <div class="wizard-count">
+            <span class="active">1</span> of 3
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $( document ).ready(function() {
+        var zip_val = $('.zip_code').val();
+        if($.trim(zip_val).length) {
+            var name_slug = $('.name_slug').val();
+            validateZipCode(zip_val,name_slug);
+        }
+    });
+    $(document).on("click","input[name='country_select']", function(){
+        $('#submit_data').removeAttr("disabled");
+    });
+    $(document).on("click","#confirm_check", function(){
+        $('#confirm_check').css('border-color','#ccc');
+    });
+    $(document).on("click","#submit_data", function(){
+        if($("#c1").prop('checked') == false){
+           $('#confirm_check').css('border-color','#ff6666');
+        }
+        else{
+            $('#confirm_check').css('border-color','#ccc');
+        }
+    });
+    $(document).on("change",".zip_code", function(){
+        var zip_val = $('.zip_code').val();
+        var name_slug = $('.name_slug').val();
+        validateZipCode(zip_val,name_slug);
+    });
+	$(document).on("click", function() {
+		$('.cls').click(function(e) {
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$(parentDiv).css( "display", "none" );
+			$('.collapse_menu').slideUp(400);
+		});
+	});
+	/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+        $(window).resize(function() {
+	 	 	windowHeight = $(window).height();
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+
+</script>
+
+
+<script>
+function validateZipCode(val, slug) {
+    $('#zip-validator-check').css('display','none');
+    url_string = "/leadquote/jewelry-insurance-customer-details/"+slug+"/"
+    $.ajax({
+        method: "GET",
+        url: url_string,
+        data: { zip_code:val},
+        beforeSend: function() {
+           $('#zip-validator').css('display','block');
+           $('#submit_data').attr('disabled','disabled');
+          },
+        success: function(response) {
+            $('#zip-validator').css('display','none');
+            $('#country_select').replaceWith(response.html_content);
+            if (response.error_status){
+                $('#zip-validator-check').css('display','block');
+               $('#submit_data').attr('disabled','disabled');
+               $('#select_county').css('display','block')
+            }
+            var checkbox_count = $('input[name="country_select"]').length;
+            if (checkbox_count==1){
+                $('input[name="country_select"]').attr('checked', true);
+                $('#submit_data').removeAttr("disabled");
+                $('#select_county').css('display','none')
+                $('#country_select >div> ul').hide();
+            }
+
+        },
+    });
+}
+
+</script>
+{% endblock %}

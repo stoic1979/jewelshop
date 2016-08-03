@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>ABC | Generic Company</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css" />
+		<link rel="stylesheet" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/style.css">
+	</head>
+	<body>
+		<header>
+			<div class="content">
+				<div class="logo">
+					<a href="#"><img src="/static/images/abc-logo.png" alt="ABC | Generic Company" /></a>
+				</div>
+				<div class="right-block pull-right">
+					<div class="abc-jewlers pull-left">
+						<a href="#"><img src="/static/images/abc-jewelers.png" alt="ABC | Jewelers" /></a>
+					</div>
+					<div class="user-area pull-left">
+						<ul>
+							<li class="user-photo "><img src="/static/images/johnanderson.png" alt="ABC | Jewelers" /></li>
+							<li class="user-name">John<span> Anderson</span></li>
+						</ul>
+					</div>
+				<div class="nav-right">		
+						<nav>	
+						
+						<div class="menu_collapse">
+					<i class="fa fa-bars" id="swipeMenu"></i>
+					<nav>
+						<ul class="collapse_menu">
+							<li class="home"><a href="#">Home</a></li>
+									<li class="admin"><a href="#">Admin</a></li>
+									<li class="logout"><a href="#">Logout Store</a></li>
+									<li class="cls"><a  href="javascript:void(0)">Close Menu</a></li>
+						</ul>
+					</nav>
+				</div>		
+								
+						</nav> 
+					</div>			
+				</div>
+			</div>
+		</header>
+		<section class="common_wrapper">
+			<div class="content">
+				<div class="get_start_wrapper clearfix">
+					<h2>ITEM[S] YOU WISH TO INSURE</h2>
+					<div class="items_wrapper">
+						<div class="select-jewel-wrapper">
+							<div class="abc-list-wrap">
+								<div class="form-group col-md-6">
+									<label>Jewelry Type</label>
+									<div class="abc-item-block">
+									<div class="icon-area"><img src="/static/images/watch.png"></div>
+									<select class="form-control jewelType" name="">
+										<option value="1">Watch</option>
+										<option value="2">Chain</option>
+										<option value="3">Ring</option>
+										<option value="4">Bracelet</option>
+										<option value="5">Ear Rings</option>
+									</select>
+									</div>
+								</div>
+								<div class="form-group col-md-6 close-div">
+									<label>Value</label>
+									<div class="abc-item-block">							
+									<input type="text" class="form-control input-lg jewelRate" placeholder="2000">
+									<div class="abc-close-icon"><a href="javascript:void(0)"><img src="/static/images/close.png"></a></div>
+									</div>
+								</div>
+							</div>	
+							<div class="abc-list-wrap">					
+								<div class="form-group col-md-6">	
+									<div class="abc-item-block">						
+										<div class="icon-area "><img src="/static/images/bracelet.png"></div>
+										<select class="form-control jewelType" name="">
+											<option value="1">Watch</option>
+											<option value="2">Chain</option>
+											<option value="3">Ring</option>
+											<option value="4" selected>Bracelet</option>
+											<option value="5">Ear Rings</option>
+										</select>
+										</div>
+									</div>
+									<div class="form-group col-md-6">														
+										<div class="abc-item-block">							
+										<input type="text" class="form-control input-lg jewelRate" placeholder="1500">
+										<div class="abc-close-icon"><a href="javascript:void(0)"><img src="/static/images/close.png"></a></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 add_bttn clearfix">
+							<button type="button" class="btn btn-block"><i class="fa fa-plus-circle"></i> Add Another Item</button>
+						</div>	
+						<div class="form-group col-md-12 continue_bttn clearfix">
+							<button type="button" class="btn btn-primary btn-block">CONTINUE</button>
+						</div>					
+					</div>
+				</div>
+				<div class="wizard-block">
+					<div class="wizard-icon">
+						<a href="#" title=""><img src="/static/images/wizard-icon.png" alt="wizard"></a>
+					</div>
+					<div class="wizard-count">
+						<span class="active">2</span> of 3
+					</div>
+				</div>
+			</div>
+
+		</section>
+		<script src="/static/js/jquery-1.11.3.js" type="text/javascript"></script>
+		<script>
+		$( document ).ready(function() {
+			$('#swipeMenu').click(function(e) {
+				if($('#swipeMenu').hasClass('active')) {
+					$('#swipeMenu').removeClass('active');
+					$('.cls').removeClass('active');
+					$('.collapse_menu').slideUp(400);
+				}else {
+					$(this).addClass('active');
+					$('.collapse_menu').slideDown(400);
+				}
+				e.stopPropagation();
+			});
+			windowHeight = $(window).height();
+			console.log(windowHeight-90);
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+		/**change function to select option**/
+		$(document).on('change', '.jewelType', function() {
+			console.log($(this).parent().parent().parent());
+		  	if(this.value == 1) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/watch.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(2000);
+		  	}else if(this.value == 2) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/chain.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(10000);
+		  	}else if(this.value == 3) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/ring.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(3000);
+		  	}else if(this.value == 4) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/bracelet.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(1500);
+		  	}
+		  	else if(this.value == 5) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/earrings.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(5000);
+		  	}
+		});
+		/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+		/**click function for add item**/
+		$(document).on("click",".add_bttn button", function(){
+			$(".select-jewel-wrapper").append('<div class="abc-list-wrap"><div class="form-group col-md-6"><div class="abc-item-block"><div class="icon-area"><img src="images/watch.png"></div><select class="form-control jewelType" name=""><option value="1">Watch</option><option value="2">Chain</option><option value="3">Ring</option><option value="4">Bracelet</option><option value="5">Ear Rings</option></select></div></div><div class="form-group col-md-6"><div class="abc-item-block"><input type="text" class="form-control input-lg jewelRate" placeholder="2000"><div class="abc-close-icon"><a href="javascript:void(0)"><img src="images/close.png"></a></div></div></div></div>');
+		});
+		$(window).resize(function() {
+	 	 	windowHeight = $(window).height();
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+		</script>
+		
+	</body>
+</html>

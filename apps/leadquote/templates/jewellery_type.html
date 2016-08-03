@@ -1,0 +1,188 @@
+{% extends 'admin_base.html' %}
+{% block section_class %}common_wrapper{% endblock %}
+{% block content %}
+
+<div class="content">
+    <div class="get_start_wrapper clearfix">
+        <h2>ITEM[S] YOU WISH TO INSURE</h2>
+
+        <form method="post" action=".">{% csrf_token %}
+            <input type="hidden" name="associate" value="{{ associate.id }}"/>
+            <input type="hidden" name="customer_slug" value="{{ is_customer_email_slug }}"/>
+            <div class="items_wrapper">
+                <div class="select-jewel-wrapper">
+                    {{ jewellerydetailsformSet.management_form }}
+                    {% for form in jewellerydetailsformSet %}
+                    <div class="abc-list-wrap">
+                        <div class="form-group col-md-6 col-sm-6 col-xs-6">
+                            <label>Jewelry Type</label>
+                            <div class="abc-item-block">
+                                <div class="icon-area">
+                                    <img src="/static/images/whitebg.png">
+                                </div>
+                                {{ form.jewellery }}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-sm-6 col-xs-6 close-div">
+                            <label class="pdt-value">Value</label>
+                            <a href="javascript:void(0)" class="help-popup"  data-toggle="popover" data-placement="top"
+                               data-content="The value of the jewelry item listed on a recent detailed receipt or
+                               appraisal. This value will be the most we will pay for repair or replacement in the
+                               event of a jewelry damage or loss."><img src="/static/images/help.png" class="img-responsive" /></a>
+
+                            <div class="abc-item-block">
+                                {{ form.jewellery_price }}
+                                {{ form.jewellery_price.errors }}
+                                <div class="abc-close-icon"><a href="javascript:void(0)"><img
+                                        src="/static/images/close.png"></a></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-md-12 add_bttn clearfix">
+                    <button id="add_more" type="button" class="btn btn-block"><i class="fa fa-plus-circle"></i> Add
+                        Another
+                        Item
+                    </button>
+                </div>
+                <div class="form-group col-md-12 continue_bttn clearfix continue_bttn">
+                    <button type="submit" class="btn btn-primary btn-block customer_btn" id="jeweller_submit" disabled="disabled" >CONTINUE</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="wizard-block">
+        <div class="wizard-icon">
+            <a href="javascript:history.go(-1);" title=""><img src="/static/images/wizard-icon.png" alt="wizard"></a>
+        </div>
+        <div class="wizard-count">
+            <span class="active">2</span> of 3
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+
+<script>
+        $(document).ready(function(){
+           $('.help-popup').popover();
+        })
+		/**change function to select option**/
+
+        function mouseUpHandler (e)            {
+
+                var container = $(".popover");
+
+                if (!container.is(e.target)
+                    && container.has(e.target).length === 0)
+                {
+                      if($('.popover').is(':visible')) {
+                            $('.help-popup').click();                        }
+
+                }
+            }
+        $(document).bind("mouseup", mouseUpHandler);
+
+
+		$(document).on('change', '.jewelType', function() {
+		       $('#jeweller_submit') .removeAttr('disabled');
+		       var item_name = $.trim($(this).find('option:selected').text());
+		  	if(item_name == 'Watch') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/watch.png');
+		  	}else if(item_name == 'Chain') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/chain.png');
+		  	}else if(item_name == 'Ring') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/ring.png');
+		  	}else if(item_name == 'Bracelet') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/bracelet.png');
+		  	}
+		  	else if(item_name == 'Earrings') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-Earrings.png');
+		  	}
+		  	else if(item_name == 'Necklace') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-Necklace.png');
+		  	}
+		  	else if(item_name == 'Brooch') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-Brooch.png');
+		  	}
+		  	else if(item_name == 'Loose Stone') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-LooseStone.png');
+		  	}
+		  	else if(item_name == 'Pendant') {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-Pendant.png');
+		  	}
+		  	else {
+		  		$(this).parent().find('.icon-area img').attr('src','/static/images/Icon-Other.png');
+		  	}
+
+		});
+		/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    var numItems = $('.abc-close-icon').length
+		    if (numItems > 1){
+		        $($(this).parent().parent().parent()).remove();
+                var prefix = 'form';
+                var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+                $('#id_' + prefix + '-TOTAL_FORMS').val(formCount - 1);
+		    }
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+		/**click function for add item**/
+		/*$(document).on("click",".add_bttn button", function(){
+			$(".select-jewel-wrapper").append('<div class="abc-list-wrap"><div class="form-group col-md-6"><div class="abc-item-block"><div class="icon-area"><img src="/static/images/watch.png"></div><select class="form-control jewelType" name=""><option value="1">Watch</option><option value="2">Chain</option><option value="3">Ring</option><option value="4">Bracelet</option><option value="5">Ear Rings</option></select></div></div><div class="form-group col-md-6"><div class="abc-item-block"><input type="text" class="form-control input-lg jewelRate" placeholder="2000"><div class="abc-close-icon"><a href="javascript:void(0)"><img src="/static/images/close.png"></a></div></div></div></div>');
+		});
+		*/
+		$(window).resize(function() {
+	 	 	windowHeight = $(window).height();
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+    $('#add_more').click(function() {
+        addForm('.abc-list-wrap', 'form');
+    });
+
+    function addForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        var row = $('.abc-list-wrap:first').clone(true).get(0);
+        var select_box = $(row).find('select');
+        var input_box = $(row).find('input');
+        updateElementIndex(select_box, input_box, prefix, formCount);
+       $(row).removeAttr('id').insertAfter($('.abc-list-wrap:last')).children('.hidden').removeClass('hidden');
+         /*$(row).children().not(':last').children().each(function() {
+    	    updateElementIndex(this, prefix, formCount);
+    	    $(this).val('');
+        }); */
+        $('#id_' + prefix + '-TOTAL_FORMS').val(formCount + 1);
+        return false;
+    }
+
+function updateElementIndex(el, input_box,  prefix, ndx) {
+		var id_regex = new RegExp('(' + prefix + '-\\d+)');
+		var replacement = prefix + '-' + ndx;
+		$(el).attr('id', 'id_form-'+ndx+'-jewellery');
+		$(el).attr('name', 'form-'+ndx+'-jewellery');
+		$(input_box).attr('id', 'id_form-'+ndx+'-jewellery_price');
+		$(input_box).attr('name', 'form-'+ndx+'-jewellery_price');
+		$(input_box).val('');
+		$(el).parent().find('.icon-area img').attr('src','/static/images/whitebg.png');
+		$(el).parent().parent().children('label').remove();
+		$(input_box).parent().parent().children('label').remove();
+
+        $('.help-popup').popover('hide');
+        $(input_box).parent().parent().children('.popover').remove();
+
+	}
+
+
+</script>
+
+
+{% endblock %}

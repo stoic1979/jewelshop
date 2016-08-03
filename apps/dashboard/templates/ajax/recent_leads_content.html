@@ -1,0 +1,11 @@
+<tbody id="recent_leads_content">
+{% for leads_dict in recent_leads|slice:":9" %}
+<tr role="row" class="odd">
+    <td>{{ leads_dict.customer.first_name }}</td>
+    <td>{{ leads_dict.store.store_acc_profile.store_name }}</td>
+    <td>{{ leads_dict.quote.selected_jewellery.jewellery_name }}</td>
+    <td>${{ leads_dict.price }}</td>
+    <td><span class="admin-tab-status admin-red-bg">Pending</span></td>
+</tr>
+{% endfor %}
+</tbody>

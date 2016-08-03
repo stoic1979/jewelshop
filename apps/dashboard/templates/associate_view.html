@@ -1,0 +1,67 @@
+{% extends 'admin_base.html' %}
+{% block title %}Associates{% endblock %}
+{% block body_class %}abccontainer{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="associatediv">
+        {% load account_tags %}
+        {% if request.user|has_group:"super admin" %}
+
+        {% else %}
+        <h1 class="sliding-u-l-r-l-inverse">Select an associates</h1>
+        {% if associates %}
+        <ul class="photo-grid">
+            {% for associate in associates %}
+            <li>
+                <a href="{% url 'customer-details' associate.name_slug_field %}">
+                    <figure><span class="abc-photodiv">
+						{% if associate.associate_acc_profile.associate_photo %}
+                    <img src="{{ associate.associate_acc_profile.associate_photo.url }}"
+                         alt="{{ associate.get_full_name }}"/>
+						{% else %}
+						 <img src="/static/images/no-name.png" alt="{{ associate.get_full_name }}"/>
+						{% endif %}
+                    </span><span class="abc-namediv">{{ associate.get_full_name }}</span>
+                        <figcaption><p><strong>{{ associate.associate_acc_profile.associate_code }}</strong></p></figcaption>
+                    </figure>
+                </a>
+            </li>
+            {% endfor %}
+            <!--<li>-->
+            <!--<a href="#"><figure><span class="abc-photodiv"><img src="/static/images/elizabethkelley.png" alt="Elizabeth Kelley" /></span><span class="abc-namediv">Elizabeth Kelley</span><figcaption><p>JA0024</p></figcaption></figure></a>-->
+            <!--</li>-->
+
+        </ul>
+        {% else %}
+        <h3>Associates not found</h3>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+<script>
+
+	/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+	$(document).on("click", function() {
+		$('.cls').click(function(e) {
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$(parentDiv).css( "display", "none" );
+			$('.collapse_menu').slideUp(400);
+		});
+	});
+
+</script>
+
+{% endblock %}

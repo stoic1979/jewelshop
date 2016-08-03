@@ -1,0 +1,675 @@
+{% extends "admin_base.html" %}
+{% load account_tags %}
+{% block title %}Dashboard {% endblock %}
+{% block section_class %}admin-panel{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/adminPanel.css">
+{% endblock %}
+{% block content %}
+
+<aside class="side-bar">
+    <ul class="menu-side-bar">
+        <li><a href="#"><i class="fa fa-tachometer"></i></a></li>
+        <li><a href="#"><i class="fa fa-sticky-note-o"></i></a></li>
+        <li><a href="#"><i class="fa fa-bar-chart"></i></a></li>
+        <li><a href="#"><i class="fa fa-user-plus"></i></a></li>
+        <li><a href="#"><i class="fa fa-fw"></i></a></li>
+        <li><a href="#"><i class="fa fa-file-o"></i></a></li>
+        <li><a href="#"><i class="fa fa-upload"></i></a></li>
+
+    </ul>
+</aside>
+<div class="content content-left ">
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+    </ol>
+    <h1 class="admin-panel-heading clearfix">Dashboard <span class="admin-setting pull-right"><i class="fa fa-gear"></i></span>
+    </h1>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6 admin-notification">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner clearfix">
+                    <div class="pull-left inner-image">
+                        <img src="/static/images/aqua_bar.jpg" alt="">
+                    </div>
+                    <div class="pull-right inner-details">
+                        <h3>{{ leads_count }}</h3>
+
+                        <p>Leads and Quotes</p>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="#" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+            </div>
+        </div><!-- ./col -->
+
+        <div class="col-lg-3 col-xs-6 admin-notification">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner clearfix">
+                    <div class="pull-left inner-image">
+                        <img src="/static/images/attainment_bar.jpg" alt="">
+                    </div>
+                    <div class="pull-right inner-details">
+                        <h3>${{ total_attainment }}.0</h3>
+
+                        <p>Attaintment Total</p>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="#" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+            </div>
+        </div><!-- ./col -->
+
+        <div class="col-lg-3 col-xs-6 admin-notification">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner clearfix">
+                    <div class="pull-left inner-image">
+                        <img src="/static/images/top_brand.png" alt="">
+                    </div>
+                    <div class="pull-right inner-details">
+                        <h3>80+</h3>
+
+                        <p>Top brand</p>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="#" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+            </div>
+        </div><!-- ./col -->
+
+        <div class="col-lg-3 col-xs-6 admin-notification">
+            <!-- small box -->
+            <div class="small-box bg-pink">
+                <div class="inner clearfix">
+                    <div class="pull-left inner-image">
+                        <img src="/static/images/store_bar.jpg" alt="">
+                    </div>
+                    <div class="pull-right inner-details">
+                        <h3>{{ store_count }}</h3>
+
+                        <p>Store</p>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="#" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+            </div>
+        </div><!-- ./col -->
+
+    </div><!-- /.row -->
+
+    <div class="row margin-top">
+        <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+            <h1 class="admin-panel-heading margin-bottom">Total lead</h1>
+
+            <div class="admin-controller clearfix">
+                <div class="pull-right">
+                    <div class="btn-group pull-right">
+                        <ul>
+                            {% for year in years %}
+                            <li><a href="javascript:;" onclick="yearFilter('{{ year }}', 'total_leads');"
+                                   class="btn btn-default btn-sm ">{{ year }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="bar-chart-main">
+                <div id="total_lead"></div>
+            </div>
+            <p>
+                <div class="pull-right total_lead-value">
+            <p class="no-margin">Total: {{ leads_count }}</p>
+            <span>Lorem Ipsum</span>
+        </div>
+        </p>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+        <h1 class="admin-panel-heading margin-bottom">Recent leads</h1>
+
+        <div class="admin-controller clearfix">
+            <div class="pull-right">
+                <div class="btn-group pull-right">
+                    <ul>
+                        <li class="duration-adjust-container"><a href="javascript:;" class="btn btn-default btn-sm ">Duration</a>
+
+                            <form id="recent_leads_filter_form">
+                                <div class="duration-adjust">
+                                    <div class="duration-control"><input type="text" placeholder="From"
+                                                                         name="start_date">
+                                    </div>
+                                    <div class="duration-control"><input type="text" placeholder="To" name="end_date">
+                                    </div>
+                                    <div class="duration-control">
+                                        <button type="button" onclick="recent_leadsFilter(this.id);" class="btn btn-primary " id="recent_lead">Submit</button>
+                                        <button type="reset" class="btn btn-danger">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="admin-panel-table table-responsive">
+            <table class="table no-margin-bottom" role="grid">
+                <thead>
+                <tr role="row">
+                    <th rowspan="1" colspan="1">Learlabs STN</th>
+                    <th rowspan="1" colspan="1">Customer Name</th>
+                    {% if request.user|has_group:"super admin" %}
+                    <th rowspan="1" colspan="1">Store</th>
+                    {% endif %}
+                    <!--<th rowspan="1" colspan="1">Jewelry</th>-->
+                    <th rowspan="1" colspan="1">Value</th>
+                    <th rowspan="1" colspan="1">Premium Amount Total</th>
+                    <th rowspan="1" colspan="1">Status</th>
+                </tr>
+                </thead>
+                <tbody id="recent_leads_content">
+                {% for leads_dict in recent_leads|slice:":6" %}
+                <tr role="row" class="odd">
+                    <td>{{ leads_dict.store.store_acc_profile.lear_lab_ID }}</td>
+                    <td>{{ leads_dict.customer.first_name }}</td>
+                    {% if request.user|has_group:"super admin" %}
+                    <td>{{ leads_dict.store.store_acc_profile.store_name }}</td>
+                    {% endif %}
+                    <!--<td>{{ leads_dict.quote.selected_jewellery.jewellery_name }}</td>-->
+                    <td>${{ leads_dict.price }}</td>
+                    <td>${{ leads_dict.premium }}</td>
+                    <td><span class="admin-tab-status admin-red-bg">Pending</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% if request.user|has_group:"super admin" %}
+<div class="row">
+    <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+        <h1 class="admin-panel-heading margin-bottom">Store vise leads</h1>
+
+        <div class="admin-controller clearfix">
+            <div class="pull-right">
+                <div class="btn-group pull-right">
+                    <ul>
+                        <li class="duration-adjust-container"><a href="javascript:;" class="btn btn-default btn-sm ">Duration</a>
+
+                            <form id="store_wise_lead">{% csrf_token %}
+                                <div class="duration-adjust">
+                                    <div class="duration-control"><input type="text" placeholder="From"
+                                                                         name="start_date"></div>
+                                    <div class="duration-control"><input type="text" placeholder="To" name="end_date">
+                                    </div>
+                                    <div class="duration-control">
+                                        <button onclick="store_wiseFilter(this.id)" type="button" class="btn btn-primary " id="store_wise">
+                                            Submit
+                                        </button>
+                                         <button type="reset" class="btn btn-danger">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="admin-panel-table table-responsive">
+            <table class="table no-margin-bottom" role="grid">
+                <thead>
+
+                <tr role="row">
+                    <th rowspan="1" colspan="1">Sl:No</th>
+                    <th rowspan="1" colspan="1">Store Name</th>
+                    <th rowspan="1" colspan="1">Jewelr ID</th>
+                    <th rowspan="1" colspan="1">Replacement Value</th>
+                    <th rowspan="1" colspan="1">Status</th>
+                </tr>
+                </thead>
+                <tbody id="store_wise_content">
+                {% for store_dict in store_vise_list|slice:":5" %}
+                <tr role="row" class="odd">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ store_dict.store.store_acc_profile.store_name }}</td>
+                    <td>{{ store_dict.store.store_acc_profile.jew_id }}</td>
+                    <td>${{ store_dict.total }}</td>
+                    <td>
+					                    	<span class="knobForSmalldevice">
+
+												{% store_percent_amount total_attainment store_dict.total %}
+					                    	</span>
+					                    	<span class="knobForlargedevice">
+					                    		<input type="text" class="knob knobForlargedevice"
+                                                       value="{% store_percent_amount total_attainment store_dict.total %}%"
+                                                       data-thickness="0.2" data-width="40" data-height="40"
+                                                       data-fgColor="#5dc524" readonly>
+					                    	</span>
+                    </td>
+                </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+            <a style="float:right;padding-right:19px;" href="{% url 'store-wise-view' %}" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+        <h1 class="admin-panel-heading margin-bottom">Total lead</h1>
+
+        <!--<div class="admin-controller clearfix">-->
+            <!--<div class="pull-right">-->
+                <!--<div class="btn-group pull-right">-->
+                    <!--<ul>-->
+                        <!--<li><a href="javascript:;" class="btn btn-default btn-sm ">Year</a></li>-->
+                        <!--<li><a href="javascript:;" class="btn btn-default btn-sm ">Month</a></li>-->
+                        <!--<li class="duration-adjust-container"><a href="javascript:;" class="btn btn-default btn-sm ">Duration</a>-->
+
+                            <!--<div class="duration-adjust">-->
+                                <!--<div class="duration-control"><input type="text" placeholder="From" name="admin-form">-->
+                                <!--</div>-->
+                                <!--<div class="duration-control"><input type="text" placeholder="To" name="admin-to"></div>-->
+                                <!--<div class="duration-control">-->
+                                    <!--<button type="submit" class="btn btn-primary ">Submit</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+        <div class="bar-chart-main">
+            <div id="donut_chart"></div>
+            <div class="donut-indicator">
+                <ul>
+                    <li><span class="donut-indicator-color green-bg"></span>Quote Submitted</li>
+                    <li><span class="donut-indicator-color purple-bg"></span>Abandoned</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+<div class="row margin-top">
+    <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+        <h1 class="admin-panel-heading margin-bottom">Replacement Values Quoted <span>monthly stats...</span></h1>
+
+        <div class="admin-controller clearfix">
+            <div class="pull-right">
+                <div class="btn-group pull-right">
+                    <ul>
+                        {% for year in years %}
+                            <li><a href="javascript:;" onclick="yearFilter('{{ year }}', 'revenue_chart');"
+                                   class="btn btn-default btn-sm ">{{ year }}</a></li>
+                            {% endfor %}
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="bar-chart-main">
+            <div id="revenue_chart"></div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12 margin-adjust">
+        <h1 class="admin-panel-heading margin-bottom">Associate vise leads</h1>
+
+        <div class="admin-controller clearfix">
+            <div class="pull-right">
+                <div class="btn-group pull-right">
+                    <ul>
+
+                        <li class="duration-adjust-container"><a href="javascript:;" class="btn btn-default btn-sm ">Duration</a>
+
+                            <form id="associate_wise_form">{% csrf_token %}
+                                <div class="duration-adjust">
+                                    <div class="duration-control"><input type="text" placeholder="From"
+                                                                         name="start_date">
+                                    </div>
+                                    <div class="duration-control"><input type="text" placeholder="To" name="end_date">
+                                    </div>
+                                    <div class="duration-control">
+                                        <button onclick="associate_wiseFilter(this.id)" type="button" class="btn btn-primary " id="associativeWise">
+                                            Submit
+                                        </button>
+                                         <button type="reset" class="btn btn-danger">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="admin-panel-table table-responsive">
+            <table class="table no-margin-bottom" role="grid">
+                <thead>
+                <tr role="row">
+                    <th rowspan="1" colspan="1">Name</th>
+                    <th rowspan="1" colspan="1">Store</th>
+                    <th rowspan="1" colspan="1">Jeweler ID</th>
+                    <th rowspan="1" colspan="1">Value</th>
+                </thead>
+                <tbody id="associate_wise_content">
+                {% for associate_dict in associate_wise_list|slice:":6" %}
+                <tr role="row" class="odd">
+                    <td>{{ associate_dict.associate.associate_acc_profile.user.get_full_name}}</td>
+                    <td>{{ associate_dict.store_associate_acc.store_account.store_acc_profile.store_name }}</td>
+                    <td>{{ associate_dict.store_associate_acc.store_account.store_acc_profile.jew_id }}</td>
+                    <td>${{ associate_dict.total }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a style="float:right;padding-right:19px;" href="{% url 'associate-wise-view' %}" class="small-box-footer clearfix"><span class="pull-left">View More</span><i
+                        class="fa fa-chevron-circle-right pull-right"></i></a>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+        function recent_leadsFilter(ele)
+			{
+			data = $("#recent_leads_filter_form").serialize()+'&filterType=recent_leads';
+			 $.ajax({
+                url : "{% url 'dashboard' %}",
+                type : "POST",
+                data : data,
+                success : function(response) {
+                        console.log(response.html_content);
+                        $("#recent_leads_content").replaceWith(response.html_content);
+                        $('#'+ele).parent().parent().hide();
+                    },
+                });
+
+			}
+
+        function yearFilter(year, filterType)
+                {
+			 $.ajax({
+                url : "{% url 'dashboard' %}",
+                type : "POST",
+                data : {'year':year, 'filterType':filterType},
+                success : function(response) {
+
+                        if (response.filtertype == 'total_leads')
+                        {
+                        barChart(response.pending_data, response.success_data);
+                        }
+                        else if (response.filtertype == 'revenue_chart'){
+                        console.log(response.revenue);
+                        revenueChart(response.months, response.revenue);
+                        }
+                    },
+                });
+
+                }
+
+
+        function associate_wiseFilter(ele)
+			{
+			data = $("#associate_wise_form").serialize()+'&filterType=associate_wise';
+
+			 $.ajax({
+                url : "{% url 'dashboard' %}",
+                type : "POST",
+                data : data,
+                success : function(response) {
+                        console.log(response.html_content);
+                        $("#associate_wise_content").replaceWith(response.html_content);
+                        $(".knob").knob({});
+                        $('#'+ele).parent().parent().hide();
+                    },
+                });
+
+			}
+
+		function store_wiseFilter(ele)
+			{
+			data = $("#store_wise_lead").serialize();
+			 $.ajax({
+                url : "{% url 'dashboard' %}",
+                type : "POST",
+                data : data,
+                success : function(response) {
+                        console.log(response.html_content);
+                        $("#store_wise_content").replaceWith(response.html_content);
+                        $(".knob").knob({});
+                        $('#'+ele).parent().parent().hide();
+                    },
+                });
+
+			}
+
+			function getBarchart()
+			{
+					$.get("/dashboard/over-view/.?chart=barchart&revenue=revenue_chart", function(response){
+						barChart(response.pending_data, response.success_data);
+						pieChart(response.pending_count, response.success_count);
+						revenueChart(response.months, response.revenue);
+			  });
+			}
+
+
+			function pieChart(pending_count, success_count)
+
+			{
+			console.log(pending_count);
+			$('#donut_chart').highcharts({
+		        chart: {
+		            type: 'pie'
+		        },
+		        credits: {
+			      	enabled: false
+			 	},
+		        title: {
+		            text: ''
+		        },
+		        colors: ['#32cd32', '#c777db'],
+		        subtitle: {
+		            text: ''
+		        },
+		        plotOptions: {
+		            pie: {
+		                innerSize: 100,
+		                depth: 45
+		            }
+		        },
+		        series: [{
+		            name: 'Delivered amount',
+		            data: [
+		                ['Quote Submitted', success_count],
+		                ['Abandoned', pending_count],
+		            ]
+		        }]
+		    });
+			}
+
+
+			function revenueChart(month, revenue)
+			{
+			$('#revenue_chart').highcharts({
+		        title: {
+		            text: '',
+		            x: -20 //center
+		        },
+		        credits: {
+				      enabled: false
+				},
+		        subtitle: {
+		            text: '',
+		            x: -20
+		        },
+		        xAxis: {
+		            categories: month
+		        },
+		        yAxis: {
+		            title: {
+		                text: ''
+		            },
+		            plotLines: [{
+		                value: 0,
+		                width: 1,
+		                color: '#808080'
+		            }]
+		        },
+		        colors: ['#ed6b75'],
+		        tooltip: {
+		            valueSuffix: '°C'
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'middle',
+		            borderWidth: 0
+		        },
+		        series: [{
+		            name: 'Revenue',
+		            data: revenue
+		        }]
+		    });
+
+			}
+
+			function barChart(pendingData, successData) {
+			$('#total_lead').highcharts({
+		        chart: {
+		            type: 'column'
+		        },
+		        credits: {
+				      enabled: false
+				},
+		        title: {
+		            text: ''
+		        },
+		        xAxis: {
+		            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+		        },
+		        colors: ['#e7ca60', '#68bc31'],
+		        yAxis: {
+		            min: 0,
+		            title: {
+		                text: ' '
+		            }
+		        },
+		        tooltip: {
+		            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+		            shared: true
+		        },
+		        plotOptions: {
+		            column: {
+		                stacking: 'normal'
+		            }
+		        },
+		        series: [{
+		            name: 'Pending',
+		            data: pendingData
+		        }, {
+		            name: 'Success',
+		            data: successData
+		        }]
+		    });
+		}
+
+		/**change function to select option**/
+		$(document).on('change', '.jewelType', function() {
+			console.log($(this).parent().parent().parent());
+		  	if(this.value == 1) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/watch.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(2000);
+		  	}else if(this.value == 2) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/chain.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(10000);
+		  	}else if(this.value == 3) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/ring.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(3000);
+		  	}else if(this.value == 4) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/bracelet.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(1500);
+		  	}
+		  	else if(this.value == 5) {
+		  		$(this).parent().find('.icon-area img').attr('src','images/earrings.png');
+		  		$(this).parent().parent().parent().find('.jewelRate').val(5000);
+		  	}
+		});
+		/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+		/**click function for add item**/
+		$(document).on("click",".add_bttn button", function(){
+			$(".select-jewel-wrapper").append('<div class="abc-list-wrap"><div class="form-group col-md-6"><div class="abc-item-block"><div class="icon-area"><img src="images/watch.png"></div><select class="form-control jewelType" name=""><option value="1">Watch</option><option value="2">Chain</option><option value="3">Ring</option><option value="4">Bracelet</option><option value="5">Ear Rings</option></select></div></div><div class="form-group col-md-6"><div class="abc-item-block"><input type="text" class="form-control input-lg jewelRate" placeholder="2000"><div class="abc-close-icon"><a href="javascript:void(0)"><img src="images/close.png"></a></div></div></div></div>');
+		});
+		$(window).resize(function() {
+	 	 	windowHeight = $(window).height();
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+		/**click function for duration field**/
+		$(document).on('click', '.duration-adjust-container a', function() {
+			if($(this).parent().find('.duration-adjust').is(':visible')) {
+			    $(this).parent().find('.duration-adjust').hide();
+			}else {
+				 $(this).parent().find('.duration-adjust').show();
+			}
+
+		});
+		$(function () {
+			$('.duration-adjust input').datepicker(
+				{ format: 'dd-mm-yyyy', autoclose: true}
+				);
+		});
+		$(function () {
+			getBarchart();
+
+		});
+		$(function () {
+        	/* jQueryKnob */
+	        $(".knob").knob({});
+	        /* END JQUERY KNOB */
+      	});
+      	$(function () {
+
+		});
+
+
+
+</script>
+{% endblock %}

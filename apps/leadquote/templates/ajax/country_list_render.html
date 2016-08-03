@@ -1,0 +1,25 @@
+<div id="country_select" class="col-md-12">
+    <div class="row">
+        {% if context.zip_code_error_message %}
+        <div>
+            <p style="color:red;">{{ context.zip_code_error_message }}</p>
+        </div>
+
+        {% elif context.zip_code_type_error_message %}
+        <div>
+            <p style="color:red;">{{ context.zip_code_type_error_message }}</p>
+        </div>
+        {% else %}
+        <p id="select_county">Select county</p>
+        <ul>
+            {% for country in context.zip_country_list %}
+            <input type="hidden" name="associate" value="{{ associate.id }}"/>
+            <li>
+                <input type="radio" name="country_select" value="{{country}}"><span>{{ country.county }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{{ form.country_select.errors }}

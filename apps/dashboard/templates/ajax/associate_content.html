@@ -1,0 +1,13 @@
+<div id="list_associate" class="multiblock associate_filter"><label>Associate
+    <select id="associate_list" class="form-control associates " multiple="multiple" name="associates">
+       {% for associate in associate_list %}
+        <option value="{{associate.user.id}}">{{associate.user}}</option>
+        {% endfor %}
+    </select>
+</label>
+</div>
+<script>
+    $('.associates').multiselect({
+        includeSelectAllOption: true
+    });
+</script>

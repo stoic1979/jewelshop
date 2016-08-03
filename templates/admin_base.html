@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Quick quote | {% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {% include "includes/css.html" %}
+    {% block extra_css %}
+    {% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% include "includes/header.html" %}
+<section class="{% block section_class %}{% endblock %}">
+    {% block content %}
+    {% endblock %}
+</section>
+{% include "includes/scripts.html"%}
+{% block extra_js %}
+
+{% endblock %}
+</body>
+</html>

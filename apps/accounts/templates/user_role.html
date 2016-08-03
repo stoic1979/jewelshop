@@ -1,0 +1,83 @@
+{% extends 'admin_base.html' %}
+{% block title %}User role {% endblock %}
+{% block extra_css %}
+<link href="/static/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+{% endblock%}
+{% block section_class %}common_wrapper registration clearfix{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="product-list clearfix">
+        <h2>Role Creation</h2>
+        <form action="." method="post" class="registrationForm">{% csrf_token %}
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        {{ form.name }}
+						{{ form.name.errors }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        {{ form.permissions }}
+                    </div>
+                </div>
+                <div class="form-group col-md-12 role_bttn clearfix">
+                    <button type="submit" name="save" class="btn btn-primary register pull-right">Save</button>
+                    <!--<button type="submit" name="save_and_add" class="btn btn-primary register pull-right">Save and add another</button>-->
+                    <!--<button type="button" class="btn btn-primary register pull-right">Save and continue editing</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="/static/js/jquery.multi-select.js" type="text/javascript"></script>
+<script src="/static/js/jquery.quicksearch.js" type="text/javascript"></script>
+<script>
+			$('#roleSelection').multiSelect({
+				selectableHeader: "<div class='custom-header'>Available Permission</div><input type='text' class='search-input col-md-12' autocomplete='on' placeholder='search..'>",	
+				selectionHeader: "<div class='custom-header'>Chosen Permission</div>",
+				selectionFooter:"<button class='custom-footer btn deselect_role' type='button'><i class='fa fa-times'></i> <span>Remove all </span></button>",
+				selectableFooter:"<button class='custom-footer btn select_role' type='button'><i class='fa fa-check'></i><span>Choose all</span></button>",			 
+				afterInit: function(ms){
+				var that = this,
+					$selectableSearch = that.$selectableUl.prev(),
+					$selectionSearch = that.$selectionUl.prev(),
+					selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+					selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+				.on('keydown', function(e){
+				  if (e.which === 40){
+					that.$selectableUl.focus();
+					return false;
+				  }
+				});
+
+				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+				.on('keydown', function(e){
+				  if (e.which == 40){
+					that.$selectionUl.focus();
+					return false;
+				  }
+				});
+			  },
+			  afterSelect: function(){
+				this.qs1.cache();
+				this.qs2.cache();
+			  },
+			  afterDeselect: function(){
+				this.qs1.cache();
+				this.qs2.cache();
+			  }
+			});
+			$(document).on("click",".custom-footer.deselect_role", function(){
+				$('#roleSelection').multiSelect('deselect_all');
+			});
+			$(document).on("click",".custom-footer.select_role", function(){
+				$('#roleSelection').multiSelect('select_all');
+			});
+
+</script>
+{% endblock %}

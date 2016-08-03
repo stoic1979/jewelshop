@@ -1,0 +1,7 @@
+.idea/*
+*.pyc
+dev_settings.py
+media/*
+static/*
+0006_auto_20151105_2246.py
+db.sqlite

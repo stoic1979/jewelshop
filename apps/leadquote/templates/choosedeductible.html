@@ -1,0 +1,430 @@
+{% extends 'admin_base.html' %}
+{% load lead_quote_tags %}
+{% block title %}Jewelers Premium Select {% endblock %}
+{% block section_class %}common_wrapper{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/flexslider.css" type="text/css" media="screen"/>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-8 col-sm-8 col-xs-12 abc-product-list">
+            <h2>Choose your deductibles</h2>
+            {% for jewelryItem in premium_content.jewelryItems %}
+            <div class="product-head">
+                <div class="abc-product-icon">
+                    {% if  jewelryItem|jewel_name:jewelryItem.itemID == 'Watch' %}
+                        <img src="/static/images/watch.png" alt="Choose your deductibles">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Chain' %}
+                        <img src="/static/images/chain.png" alt="Choose your deductibles">
+                    {% elif  jewelryItem|jewel_name:jewelryItem.itemID == 'Ring' %}
+                        <img src="/static/images/ring.png" alt="ring">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Bracelet' %}
+                        <img src="/static/images/bracelet.png" alt="Choose your deductibles">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Earrings' %}
+                        <img src="/static/images/Icon-Earrings.png" alt="Choose your deductibles">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Necklace' %}
+                        <img src="/static/images/Icon-Necklace.png" alt="Choose your deductibles">
+                    {% elif  jewelryItem|jewel_name:jewelryItem.itemID == 'Brooch' %}
+                        <img src="/static/images/Icon-Brooch.png" alt="Choose your deductibles">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Loose Stone' %}
+                        <img src="/static/images/Icon-LooseStone.png" alt="Choose your deductibles">
+                    {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Pendant' %}
+                        <img src="/static/images/Icon-Pendant.png" alt="Choose your deductibles">
+                    {% else %}
+                        <img src="/static/images/Icon-Other.png" alt="Choose your deductibles">
+                    {% endif %}
+                </div>
+                <div class="abc-product-name">
+                    {{ jewelryItem|jewel_name:jewelryItem.itemID }}
+                </div>
+                <div class="abc-product-value">
+                    valued at ${{ jewelryItem.itemValue }}
+                </div>
+            </div>
+            <div class="abc-product-slider">
+                <div class="slider">
+                    <input type="hidden" value="{{ jewelryItem.jewelryLocation.county }}" id="county_value"/>
+                    <input type="hidden" value="{{ jewelryItem.jewelryLocation.state }}" id="state_value"/>
+                    <div class="flexslider carousel">
+                        <ul class="slides">
+                            {% for premium, deductible, taxesAndSurcharges in jewelryItem|zipped_list %}
+
+                            <li class_identifier="class_premium-{{ jewelryItem.itemID }}" {% if forloop.first %}class="active" {% endif %}
+                                onclick="selectPremium( this, {{ jewelryItem.itemValue }}, {{ jewelryItem.itemID }},{{ premium }}, {{ deductible }}, {{ taxesAndSurcharges }}, '{{ customer_email_slug }}', '{{user.name_slug_field}}', '{{ jewelryItem|jewel_name:jewelryItem.itemID }}')">
+                                <div class="deductiable">
+                                    DEDUCTIBLE
+                                </div>
+                                <div class="value valuebr">
+                                    ${{ deductible|floatformat:"0" }}
+                                </div>
+                                <div class="anualpremium">
+                                    ANNUAL
+                                    PREMIUM
+                                </div>
+                                <div class="value">
+                                    ${{ premium|floatformat:"0" }}
+                                </div>
+                                <div class="select">
+                                    SELECT
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="product-list">
+                <div class="cart-details">
+                    <div class="summaryblock">
+                        Your Summary
+                    </div>
+                    <div class="customer-name">
+                        {{ customer_email.get_customer_full_name }}
+                    </div>
+                    <div class="customer-city">
+                        <span id="summery_county"></span>, <span id="summery_state"></span>,
+                        {{ customer_email.zip_code }}
+                    </div>
+                </div>
+                <div class="col-md-12 premium_pdt_details">
+                    <input type="hidden" value="{{ customer_email.email }}" class="notification_email"/>
+                    <input type="hidden" value="False" class="notification_send"/>
+                    <input type="hidden" value="{{ premium_content.effectiveDate }}" class="effectiveDate"/>
+                    <input type="hidden" value="{{ premium_content.minTaxesAndSurcharges }}" class="minTaxesAndSurcharges"/>
+                    <input type="hidden" value="{{ premium_content.accountLocation }}" class="accountLocation"/>
+                    <input type="hidden" value="{{ premium_content.isJewelersMutualPolicyholder }}" class="isJewelersMutualPolicyholder"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.totalJewelryValue }}" class="totalJewelryValue"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.safeConcealed }}" class="safeConcealed"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.safeAnchored }}" class="safeAnchored"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.safeWeightClass }}" class="safeWeightClass"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.alarmType }}" class="alarmType"/>
+                    <input type="hidden" value="{{ premium_content.riskModifiers.safeType }}" class="safeType"/>
+                    <input type="hidden" value="{{ premium_content.isEmailAlreadyUsed }}" class="isEmailAlreadyUsed"/>
+                    <input type="hidden" value="{{ premium_content.isJewelersMutualCareTips }}" class="isJewelersMutualCareTips"/>
+                    <input type="hidden" value="{{ premium_content.jewelerCode }}" class="jewelerCode"/>
+                    <input type="hidden" value="{{ premium_content.isPlatinumPoints }}" class="isPlatinumPoints"/>
+                    <input type="hidden" value="{{ premium_content.emailAddress }}" class="emailAddress"/>
+                    <input type="hidden" value="{{ premium_content.minPremium }}" class="minPremium"/>
+
+                </div>
+                <div class="product-list-inner br-top-nil">
+                    <ul id="premium_right_content">
+
+                        {% for jewelryItem in premium_content.jewelryItems %}
+                        <li class="class_premium-{{ jewelryItem.itemID }}">
+                            <div class="product-list-icon">
+                                {% if  jewelryItem|jewel_name:jewelryItem.itemID == 'Watch' %}
+                                    <img src="/static/images/watch.png" alt="Choose your deductibles">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Chain' %}
+                                    <img src="/static/images/chain.png" alt="Choose your deductibles">
+                                {% elif  jewelryItem|jewel_name:jewelryItem.itemID == 'Ring' %}
+                                    <img src="/static/images/ring.png" alt="ring">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Bracelet' %}
+                                    <img src="/static/images/bracelet.png" alt="Choose your deductibles">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Earrings' %}
+                                    <img src="/static/images/Icon-Earrings.png" alt="Choose your deductibles">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Necklace' %}
+                                    <img src="/static/images/Icon-Necklace.png" alt="Choose your deductibles">
+                                {% elif  jewelryItem|jewel_name:jewelryItem.itemID == 'Brooch' %}
+                                    <img src="/static/images/Icon-Brooch.png" alt="Choose your deductibles">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Loose Stone' %}
+                                    <img src="/static/images/Icon-LooseStone.png" alt="Choose your deductibles">
+                                {% elif jewelryItem|jewel_name:jewelryItem.itemID == 'Pendant' %}
+                                    <img src="/static/images/Icon-Pendant.png" alt="Choose your deductibles">
+                                {% else %}
+                                    <img src="/static/images/Icon-Other.png" alt="Choose your deductibles">
+                                {% endif %}
+                            </div>
+                            <div class="product-details">
+                                <span class="name">{{ jewelryItem|jewel_name:jewelryItem.itemID }}</span>
+                                <input type="hidden" value="{{ jewelryItem.itemID }}" class="itemId"/>
+                                <span class="product-value">valued at ${{ jewelryItem.itemValue }}</span>
+                                <input type="hidden" value="{{ jewelryItem.itemValue }}" class="product-value"/>
+                                <span class="product-premium">Annual premium:  <span
+                                        class="product-price"> ${{ jewelryItem.premiums|first|floatformat:"0" }}</span></span>
+                                <input type="hidden" value="{{ jewelryItem.premiums|first }}" class="product-price"/>
+                                <span class="product-deductible">(with ${{jewelryItem.deductibles|first|floatformat:"0"}} deductible)</span>
+                                <input type="hidden" value="{{jewelryItem.deductibles|first}}"
+                                       class="product-deductible"/>
+                                <input type="hidden" value="{{jewelryItem.taxesAndSurcharges|first}}"
+                                       class="product-taxesAndSurcharges" />
+
+                            </div>
+                            <i class="fa fa-times-circle"></i>
+                        </li>
+                        {% endfor %}
+                        <li class="no-border">
+                            <div class="product-total-details">
+                                <span class="product-total">Total:   <span
+                                        class="product-total-price">${{ initial_total }}</span></span>
+                                <span class="product-year">per year</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="add-another-btn">
+                        <button type="button" class="btn btn-block"><i class="fa fa-plus-circle"></i> Add Another
+                            Item
+                        </button>
+                    </div>
+
+                    <div class="add-applay-btn">
+                        <button type="button"
+                                onclick="applyQuote('{{ customer_email_slug }}', '{{user.name_slug_field}}')"
+                                class="btn btn-block">Apply for Coverage
+                        </button>
+                        <div class="coverage-details">
+                            Total includes all taxes & fees. Discounts may apply if
+                            certain criteria are met. Rate will only change if wearer
+                            criteria is altered.
+                        </div>
+                    </div>
+                </div>
+                <div class="product-list-inner">
+                    <div class="email-quote">
+                        EMAIL MY QUOTE
+                    </div>
+                    <div class="email-send-box">
+                        <input type="text" class="form-control cust_email" placeholder="[Customer Email inserted]"
+                               value="{{ customer_email.email }}">
+                        <input type="hidden" class="form-control" id="user_id" value="{{ customer_email.id }}">
+                        <button type="button" id="customer_email_btn" class="btn btn-block">Send</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="wizard-block">
+        <div class="wizard-icon">
+            <a href="javascript:history.go(-1);" title=""><img src="/static/images/wizard-icon.png" alt="wizard"></a>
+        </div>
+        <div class="wizard-count">
+            <span class="active">3</span> of 3
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Customer email -->
+<div class="modal fade" id="customer_modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title modalTitle">Email Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please confirm your email address, especially if this purchase is a surprise. <span
+                        class="get_email"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="send_email" >Ok</button>
+                <button type="button" class="btn btn-default blueButton" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<!-- FlexSlider -->
+<script defer src="/static/js/jquery.flexslider.js"></script>
+
+<script>
+
+    $(document).on("click","#customer_email_btn", function(){
+        var cust_email = $('.cust_email').val();
+        $('.get_email').html(cust_email);
+        $('.notification_email').val(cust_email);
+        $('#customer_modal').modal('show');
+    });
+	$(document).on("click", function() {
+		$('.cls').click(function(e) {
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$(parentDiv).css( "display", "none" );
+			$('.collapse_menu').slideUp(400);
+		});
+	});/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+		/**click function for remove item**/
+		$(document).on('click', '.abc-close-icon', function() {
+		    $($(this).parent().parent().parent()).remove();
+		});
+		$(document).on("click",".cls", function(){
+			var parentDiv = $(this).parent().parent().find('.collapse_menu');
+			$('.collapse_menu').slideUp(400);
+			if($('#swipeMenu').hasClass('active')) {
+				$('#swipeMenu').removeClass('active');
+			}
+		});
+			/**click function for add item**/
+			$(document).on("click",".add_bttn button", function(){
+				$(".items_wrapper").append('<div class="form-group col-md-6"><label>Jewelry Type</label><select class="form-control" name=""><option value="">Select a Type</option></select></div><div class="form-group col-md-6"><label>Value</label><input type="text" class="form-control input-lg" placeholder="Last Name"></div>');
+			});
+
+
+</script>
+<script type="text/javascript">
+        $( document ).ready(function() {
+            county = $('#county_value').val();
+            state =  $('#state_value').val();
+            $('#summery_county').html(county);
+            $('#summery_state').html(state);
+        });
+
+		$(window).load(function(){
+
+		$('.flexslider').flexslider({
+		animation: "slide",
+		animationLoop: false,
+		itemWidth: 120,
+		itemMargin: 5,
+		start: function(slider){
+		$('body').removeClass('loading');
+		}
+		});
+		});
+		$(window).resize(function() {
+	 	 	windowHeight = $(window).height();
+	 	 	$('.collapse_menu').css('min-height',windowHeight-90);
+		});
+</script>
+<script type="text/javascript">
+
+    $(document).on("click","#send_email", function(){
+        email = $('.cust_email').val();
+        $('.notification_send').val('True');
+        user_id = $('#user_id').val();
+        $('#customer_modal').modal('hide');
+        $.ajax({
+            url : "{% url 'send-email' %}",
+            type : "POST",
+            async: false,
+            data: { email:email, user_id:user_id },
+            success: function(response) {
+                console.log('message send');
+            }
+       });
+    });
+
+    function selectPremium(elem, item_value, item_id, premium, deduction, taxesAndSurcharges, slug, name_slug, item_name)
+        {
+            class_selector = $(elem).attr( "class_identifier" );
+            $(elem).parent( "ul" ).children().removeClass("active");
+            $(elem).attr( "class", "active" );
+            var url_string = "/leadquote/jewelry-insurance-premium-rates/"+slug+"/"+name_slug+"/"
+            $.ajax({
+                method: "GET",
+                url: url_string,
+                async: false,
+                data: { item_id:item_id, premium:premium, deduction:deduction, taxesAndSurcharges:taxesAndSurcharges, item_value:item_value, item_name:item_name },
+                success: function(response) {
+                $("#premium_right_content").find('.'+class_selector).html(response.html_content);
+            },
+        });
+        var total = 0;
+        $('#premium_right_content li .product-details').each(function(index, elem){
+            value = $(elem).find('input.product-price[type="hidden"]').val();
+            total = parseInt(total)+parseInt(value);
+        })
+        $('.product-total-price').html('$'+total);
+    }
+
+    /*function applyQuote(slug, name_slug)
+		{
+          var myarray = [];
+          myarrays = [];
+          $('#premium_right_content li:not(:last)').each(function(index, elem){
+          myarray.push($(elem).find('.name').text());
+          myarray.push($(elem).find('input.itemId').val());
+          myarray.push($(elem).find('input.product-value[type="hidden"]').val());
+          myarray.push($(elem).find('input.product-price[type="hidden"]').val());
+          myarray.push($(elem).find('input.product-deductible[type="hidden"]').val());
+          myarrays.push(myarray);
+          });
+           var url_string = "/leadquote/jewelry-insurance-premium-rates/"+slug+"/"+name_slug+"/"
+           $.ajax({
+                method: "POST",
+                url: url_string,
+                data: {'my_data':myarray,},
+                success: function(response) {
+                console.log('success')
+
+                    },
+
+               });
+	}*/
+
+
+
+		function applyQuote(slug, name_slug)
+		{
+		    var pdt_data ={};
+		    var pdt_details = [];
+            var pdt_data = {
+                'notification_email':$('.notification_email').val(),
+                'notification_send':$('.notification_send').val(),
+                'effectiveDate':$('.effectiveDate').val(),
+                'minTaxesAndSurcharges':$('.minTaxesAndSurcharges').val(),
+                'accountLocation':$('.accountLocation').val(),
+                'isJewelersMutualPolicyholder':$('.isJewelersMutualPolicyholder').val(),
+                'totalJewelryValue':$('.totalJewelryValue').val(),
+                'safeConcealed':$('.safeConcealed').val(),
+                'safeAnchored':$('.safeAnchored').val(),
+                'safeWeightClass':$('.safeWeightClass').val(),
+                'alarmType':$('.alarmType').val(),
+                'safeType':$('.safeType').val(),
+                'isEmailAlreadyUsed':$('.isEmailAlreadyUsed').val(),
+                'isJewelersMutualCareTips':$('.isJewelersMutualCareTips').val(),
+                'jewelerCode':$('.jewelerCode').val(),
+                'isPlatinumPoints':$('.isPlatinumPoints').val(),
+                'emailAddress':$('.emailAddress').val(),
+                'minPremium':$('.minPremium').val(),
+            };
+          var dict = {};
+          var myarray = [];
+          $('#premium_right_content li .product-details').each(function(index, elem){
+          var dict = {'jewel_name':$(elem).find('.name').text(),'itemId':$(elem).find('input.itemId').val(),
+                       'jewel_price':$(elem).find('input.product-value[type="hidden"]').val(),
+                       'premium_amount':$(elem).find('input.product-price[type="hidden"]').val(),
+                       'deduction_amount':$(elem).find('input.product-deductible[type="hidden"]').val(),
+                       'taxesAndSurcharges':$(elem).find('input.product-taxesAndSurcharges[type="hidden"]').val()
+          }
+
+          myarray.push(dict);
+            // alert($(elem).find('input.product-taxesAndSurcharges[type="hidden"]').val());
+          });
+          console.log(myarray)
+           var url_string = "/leadquote/jewelry-insurance-premium-rates/"+slug+"/"+name_slug+"/"
+           $.ajax({
+            method: "POST",
+            url: url_string,
+            data: {'my_data':JSON.stringify(myarray),'customer_email_slug':JSON.stringify(slug),'pdt_api_data':JSON.stringify(pdt_data)},
+            success: function(response) {
+             window.open("http://mytest01.jewelersnt.local/jewelry-insurance-quote-apply/express?providerKey=agnosticpos&uniqueid="+response.trans_id);
+
+            },
+            });
+		}
+
+
+</script>
+
+
+{% endblock %}
